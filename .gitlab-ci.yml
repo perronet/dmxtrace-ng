@@ -1,0 +1,40 @@
+# Fetch submodules
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+before_script:
+  - apt-get update -yqq
+  - apt-get install -yqq --no-install-recommends build-essential git cmake sudo bison flex llvm-dev libclang-dev clang
+
+stages:
+  - build
+
+.build-and-test:
+ stage: build
+ image: rust:latest
+ script:
+   - cd ${CI_JOB_NAME}
+   - cargo build --verbose
+   - cargo test --verbose
+
+rbftrace-core:
+  extends: .build-and-test
+
+rbftrace-rta:
+  extends: .build-and-test
+
+rbftrace-tracing:
+  extends: .build-and-test
+
+rbftrace-config-detection:
+  extends: .build-and-test
+
+rbftrace-model-extraction:
+  extends: .build-and-test
+
+workspace:
+ stage: build
+ image: rust:latest
+ script:
+   - cargo build --verbose
+   - cargo test --verbose

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+SCRIPT_DIR="$(dirname "$0")"
+
+sudo "$SCRIPT_DIR"/../target/debug/detect-config

@@ -1,0 +1,12 @@
+[package]
+name = "rbftrace-model-extraction"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rbftrace-core = { path = "../rbftrace-core" }
+serde_yaml = "0.8"
+serde = { version = "1.0.126", features = ["derive"] }
+structopt = "0.3.17"

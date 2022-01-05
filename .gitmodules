@@ -1,0 +1,10 @@
+[submodule "rbftrace-tracing/vendor/trace-cmd"]
+	path = rbftrace-tracing/vendor/trace-cmd
+	url = https://github.com/cedric-courtaud/trace-cmd.git
+	branch = rbf-trace
+[submodule "rbftrace-tracing/vendor/libtracefs"]
+	path = rbftrace-tracing/vendor/libtracefs
+	url = https://github.com/perronet/libtracefs.git
+[submodule "rbftrace-tracing/vendor/libtraceevent"]
+	path = rbftrace-tracing/vendor/libtraceevent
+	url = https://github.com/perronet/libtraceevent.git
