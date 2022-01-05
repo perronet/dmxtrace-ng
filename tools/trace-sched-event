@@ -1,0 +1,6 @@
+#!/bin/bash
+
+SCRIPT_DIR="$(dirname "$0")"
+LIB_DIR="rbftrace-tracing/vendor/output/usr/lib64"
+
+sudo LD_LIBRARY_PATH="$SCRIPT_DIR"/../"$LIB_DIR" "$SCRIPT_DIR"/../target/debug/trace-sched-event "$@"

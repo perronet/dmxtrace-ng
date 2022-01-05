@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "rbftrace-tracing",
+    "rbftrace-rta",
+    "rbftrace-model-extraction",
+    "rbftrace-core",
+    "rbftrace-config-detection",
+]

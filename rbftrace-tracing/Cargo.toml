@@ -1,0 +1,19 @@
+[package]
+name = "rbftrace-tracing"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+bindgen = "0.53.1"
+
+[dependencies]
+rbftrace-core = { path = "../rbftrace-core" }
+rbftrace-config-detection = { path = "../rbftrace-config-detection" }
+sysinfo = "0.21.1"
+ctrlc = "3.1.4"
+serde_json = "1.0.52"
+serde_yaml = "0.8"
+serde = { version = "1.0.126", features = ["derive"] }
+structopt = "0.3.17"

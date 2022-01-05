@@ -1,0 +1,15 @@
+- etype: Activation
+  pid: 1
+  instant: 1
+- etype: Dispatch
+  pid: 1
+  instant: 2
+- etype: Preemption 
+  pid: 1
+  instant: 3
+- etype: Deactivation
+  pid: 1
+  instant: 4
+- etype: Exit
+  pid: 1
+  instant: 5
