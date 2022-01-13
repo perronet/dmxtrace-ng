@@ -48,7 +48,7 @@ fn main() {
     }
 
     /* Tracing */
-    let mut evg = FTraceEVG::new(&target_pids, &traced_pids, args.ftrace_len, args.ftrace_bufsize);
+    let mut evg = FTraceEVG::new(&target_pids, &traced_pids, Time::from_s(args.ftrace_len).to_ns(), args.ftrace_bufsize);
     
     evg.setup();
 
@@ -84,7 +84,7 @@ pub struct Opt {
 
     /// Trace for the specified duration (in seconds).
     #[structopt(short = "l", long, default_value = "0")]
-    pub ftrace_len: Time,
+    pub ftrace_len: f64,
 
     /// Set ftrace buffer size (in kb).
     #[structopt(short = "b", long, default_value = "65536")]

@@ -41,7 +41,7 @@ impl RbfCurve {
         
         let arrival: (Time, Cost) = (instant, cost);
         let t = instant;
-        let mut curr_observed_tot_cost = 0;
+        let mut curr_observed_tot_cost = Time::zero();
 
         // sanity check: the arrival times must be monotonic
         assert!(t >= self.last_arrivals_window.back().unwrap_or(&arrival).0);
@@ -53,7 +53,7 @@ impl RbfCurve {
             // Compute the separation from the current arrival t to the arrival
             // of the (i + 1)-th preceding job.
             // So if i=0, we are looking at two adjacent jobs.
-            let observed_gap = t - arr.0 + 1;
+            let observed_gap = t - arr.0 + Time::from_ns(1);
             curr_observed_tot_cost += arr.1;
 
             // we have not yet seen a distance of length "observed_gap" -> first sample
@@ -89,8 +89,8 @@ impl RbfCurve {
         let curve_1_clone = self.curve.clone();
         let mut curve_1 = curve_1_clone.into_iter();
         let mut curve_2 = other.curve.into_iter();
-        let mut last_cost_1 = 0;
-        let mut last_cost_2 = 0;
+        let mut last_cost_1 = Time::zero();
+        let mut last_cost_2 = Time::zero();
         let mut point_1 = curve_1.next();
         let mut point_2 = curve_2.next();
 
@@ -144,12 +144,12 @@ impl RbfCurve {
 
     pub fn new(pid: Pid, window_size: usize) -> Self {
         let mut curve = SparseMap::new(window_size);
-        curve.add(Point::new(0, 0));
+        curve.add(Point::new(Time::zero(), Time::zero()));
         RbfCurve { 
             last_arrivals_window: VecDeque::with_capacity(window_size+1),
             window_size: window_size,
             curve: curve,
-            wcet: 0,
+            wcet: Time::zero(),
             pid: pid,
             prio: 0,
         }
@@ -180,7 +180,11 @@ mod tests {
 
     #[test]
     fn periodic() {
-        let rbf = RbfCurve::from([(0, 5), (5, 5), (10, 5), (15, 5), (20, 5)]);
+        let rbf = RbfCurve::from([(Time::from_ns(0), Time::from_ns(5)), 
+                                          (Time::from_ns(5), Time::from_ns(5)), 
+                                          (Time::from_ns(10), Time::from_ns(5)), 
+                                          (Time::from_ns(15), Time::from_ns(5)), 
+                                          (Time::from_ns(20), Time::from_ns(5))]);
         let extracted_curve: Vec<Point> = rbf.curve.into_iter().collect();
         let ground_truth = [p(0, 0), p(1, 5), p(6, 10), p(11, 15), p(16, 20), p(21, 25)];
 
@@ -189,7 +193,11 @@ mod tests {
 
     #[test]
     fn periodic_var_cost() {
-        let rbf = RbfCurve::from([(0, 1), (5, 6), (10, 5), (15, 50), (20, 5)]);
+        let rbf = RbfCurve::from([(Time::from_ns(0 ), Time::from_ns(1 )), 
+                                          (Time::from_ns(5 ), Time::from_ns(6 )), 
+                                          (Time::from_ns(10), Time::from_ns(5 )), 
+                                          (Time::from_ns(15), Time::from_ns(50)), 
+                                          (Time::from_ns(20), Time::from_ns(5 ))]);
         let extracted_curve: Vec<Point> = rbf.curve.into_iter().collect();
         let ground_truth = [p(0, 0), p(1, 50), p(6, 55), p(11, 61), p(16, 66), p(21, 67)];
 
@@ -198,7 +206,13 @@ mod tests {
 
     #[test]
     fn bursty() {
-        let rbf = RbfCurve::from([(0, 10), (1, 10), (2, 10), (20, 10), (21, 10), (22, 10)]);
+        let rbf = RbfCurve::from([(Time::from_ns(0 ), Time::from_ns(10)), 
+                                          (Time::from_ns(1 ), Time::from_ns(10)), 
+                                          (Time::from_ns(2 ), Time::from_ns(10)), 
+                                          (Time::from_ns(20), Time::from_ns(10)), 
+                                          (Time::from_ns(21), Time::from_ns(10)), 
+                                          (Time::from_ns(22), Time::from_ns(10))]);
+
         let extracted_curve: Vec<Point> = rbf.curve.into_iter().collect();
         let ground_truth = [p(0, 0), p(1, 10), p(2, 20), p(3, 30), p(21, 40), p(22, 50), p(23, 60)];
 
@@ -207,7 +221,9 @@ mod tests {
 
     #[test]
     fn far_spikes() {
-        let rbf = RbfCurve::from([(4, 90), (5, 90), (50, 100)]);
+        let rbf = RbfCurve::from([(Time::from_ns(4) , Time::from_ns(90)), 
+                                          (Time::from_ns(5) , Time::from_ns(90)),
+                                          (Time::from_ns(50), Time::from_ns(100))]);
         let extracted_curve: Vec<Point> = rbf.curve.into_iter().collect();
         let ground_truth = [p(0, 0), p(1, 100), p(2, 180), p(46, 190), p(47, 280)];
 
@@ -355,7 +371,7 @@ mod tests {
 
     /* Support */
 
-    fn p(delta: Duration, cost: Cost) -> Point {
-        Point::new(delta, cost)
+    fn p(delta_ns: u64, cost_ns: u64) -> Point {
+        Point::new(Time::from_ns(delta_ns), Time::from_ns(cost_ns))
     }
 }

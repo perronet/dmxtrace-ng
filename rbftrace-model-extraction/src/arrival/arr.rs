@@ -11,7 +11,7 @@ pub struct Arrival {
     /// Self-suspension time
     pub ss_time : Cost,
     /// Self-suspension count
-    pub ss_cnt : Cost,
+    pub ss_cnt : u64,
 
     /*** Data used by only by the model matcher ***/
     pub t_avg_min : Period,
@@ -20,7 +20,7 @@ pub struct Arrival {
 }
 
 impl Arrival {
-    pub fn new (instant: Time, cost : Cost, ss_time : Duration, ss_cnt : Duration) -> Self 
+    pub fn new (instant: Time, cost : Cost, ss_time : Duration, ss_cnt : u64) -> Self 
     {
         Arrival {
             instant : instant,
@@ -29,8 +29,8 @@ impl Arrival {
             ss_time : ss_time,
             ss_cnt : ss_cnt,
 
-            t_avg_min : u64::max_value(),
-            t_avg_max : u64::min_value(),
+            t_avg_min : Time::from_ns(u64::max_value()),
+            t_avg_max : Time::from_ns(u64::min_value()),
             buf_prio : 0,
         }
     }

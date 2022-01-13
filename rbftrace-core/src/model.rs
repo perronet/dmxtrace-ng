@@ -1,5 +1,5 @@
 use crate::sys_conf::SysConf;
-use crate::time::{Pid, Time, ns_to_s};
+use crate::time::{Pid, Time};
 use std::collections::{BTreeMap};
 
 use serde::{Serialize, Deserialize};
@@ -56,21 +56,23 @@ impl ScalarTaskModel {
         match self.arrival_model {
             JobArrivalModel::PeriodicJitterOffset{period, jitter, offset} => {
                 println!("PJITTER-OFFSET");
-                println!("    P = {}", ns_to_s(period));
-                println!("    J = {}", ns_to_s(jitter));
-                println!("    WCET = {}", ns_to_s(self.execution_time));
-                println!("    OFFSET = {}", ns_to_s(offset));
+                println!("    P = {}", (period.to_s()));
+                println!("    J = {}", (jitter.to_s()));
+                println!("    WCET = {}", (self.execution_time.to_s()));
+                println!("    OFFSET = {}", (offset.to_s()));
             },
+
             JobArrivalModel::PeriodicJitter{period, jitter} => {
                 println!("PJITTER");
-                println!("    P = {}", ns_to_s(period));
-                println!("    J = {}", ns_to_s(jitter));
-                println!("    WCET = {}", ns_to_s(self.execution_time));
+                println!("    P = {}", (period.to_s()));
+                println!("    J = {}", (jitter.to_s()));
+                println!("    WCET = {}", (self.execution_time.to_s()));
             },
+            
             JobArrivalModel::Sporadic(mit) => {
                 println!("SPORADIC");
-                println!("    MIT = {}", ns_to_s(mit));
-                println!("    WCET = {}", ns_to_s(self.execution_time));
+                println!("    MIT = {}",  (mit.to_s()));
+                println!("    WCET = {}", (self.execution_time.to_s()));
             },
         }
     }

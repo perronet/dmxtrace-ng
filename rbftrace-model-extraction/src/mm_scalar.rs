@@ -66,9 +66,10 @@ impl ScalarMM {
     pub fn new(jitter_bound: Jitter, buf_size: usize) -> Self {
         let mut j = jitter_bound;
         let mut buf = buf_size;
-        if jitter_bound == 0 {
-            j = 1_500_000
+        if jitter_bound.is_zero() {
+            j = Time::from_ms(1.5)
         }
+
         if buf_size == 0 {
             buf = 1_000
         }
@@ -90,7 +91,7 @@ fn match_sporadic(arr_seq: &ArrivalSequenceSubset) -> Option<ScalarTaskModel> {
     let mit = arr_seq.min_interarrival;
     let wcet = arr_seq.wcet;
     
-    if mit > 0 {
+    if mit > Time::zero() {
         return Some(ScalarTaskModel::sporadic(wcet, mit));
     }
 
@@ -128,7 +129,7 @@ fn disambiguate_model(models: &MatchedModels) -> Option<ScalarTaskModel> {
 /// Checks if the period fits in the trace, returns the jitter and offset for the best fit
 fn fit_period(arrivals: &Vec<Arrival>, p: Period, j_bound: Jitter) -> Option<(Jitter, Offset)> {
     let mut jitter: i64; // Can be negative, in which case the period doesn't fit
-    let mut max_jitter: Jitter = 0;
+    let mut max_jitter: Jitter = Time::zero();
     let mut max_error: u64 = 0;
     let mut n_tries: u32 = 1;
     let mut t: i64;
@@ -138,26 +139,26 @@ fn fit_period(arrivals: &Vec<Arrival>, p: Period, j_bound: Jitter) -> Option<(Ji
     arrivals_sorted.sort_by(|a, b| a.idx.cmp(&b.idx));
 
     let mut first_arr_jitter: u64 = 0;
-    let first_arr_idx: u64 = arrivals_sorted[0].idx;
-    let first_arr: u64 = arrivals_sorted[0].instant;
+    let first_arr_idx= arrivals_sorted[0].idx;
+    let first_arr= arrivals_sorted[0].instant;
 
     while !fit_found && n_tries <= 2 {
-        let t_0 = first_arr as i64 - first_arr_jitter as i64; // Starting point
+        let t_0 = first_arr.to_ns() as i64 - first_arr_jitter as i64; // Starting point
         for arr in &arrivals_sorted {
             let k = arr.idx - first_arr_idx; // There might have been prior observations, but we start from 0
-            t = t_0 + (k as i64)*(p as i64); // t is a "periodic point" in the trace
-            jitter = arr.instant as i64 - t;
+            t = t_0 + (k as i64)*(p.to_ns() as i64); // t is a "periodic point" in the trace
+            jitter = arr.instant.to_ns() as i64 - t;
 
             // If the jitter was negative, this will prevent us from trying again with first_arr_jitter > JITTER_BOUND
-            if jitter.abs() as u64 > j_bound { // Too much jitter
+            if jitter.abs() as u64 > j_bound.to_ns() { // Too much jitter
                 return None;
             }
             if n_tries > 1 && jitter < 0 { // Period is too big
                 return None;
             }
 
-            if jitter > max_jitter as i64 {
-                max_jitter = jitter as u64;
+            if jitter > max_jitter.to_ns() as i64 {
+                max_jitter = Time::from_ns(jitter as u64);
             } 
             if jitter < 0 {
                 max_error = max_error.max(jitter.abs() as u64);
@@ -168,7 +169,7 @@ fn fit_period(arrivals: &Vec<Arrival>, p: Period, j_bound: Jitter) -> Option<(Ji
             first_arr_jitter = max_error;
             n_tries += 1;
             max_error = 0;
-            max_jitter = 0;
+            max_jitter = Time::zero();
         } else {
             fit_found = true;
         }
@@ -176,13 +177,13 @@ fn fit_period(arrivals: &Vec<Arrival>, p: Period, j_bound: Jitter) -> Option<(Ji
 
     if fit_found {
         assert!(max_jitter <= j_bound);
-        assert!(first_arr_jitter <= max_jitter);
+        assert!(first_arr_jitter <= max_jitter.to_ns());
 
-        let offset = first_arr as i64 - first_arr_jitter as i64;
+        let offset = first_arr.to_ns() as i64 - first_arr_jitter as i64;
         // Underflow. This only happens in dummy traces, we assume that the system has been running long enough to avoid this issue.
         if offset < 0 { panic!("Offset underflow."); }
 
-        return Some((max_jitter, offset as Offset));
+        return Some((max_jitter, Time::from_ns(offset as u64) as Offset));
     }
     return None;
 }

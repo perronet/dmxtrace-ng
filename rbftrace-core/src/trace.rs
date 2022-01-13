@@ -56,6 +56,28 @@ impl TraceEvent {
     pub fn exit(pid: Pid, instant : Time) -> Self {
         TraceEvent::new(TraceEventType::Exit, pid, instant)
     }
+
+    pub fn is_activation(&self) -> bool {
+        self.etype == TraceEventType::Activation
+    }
+    
+    pub fn is_deactivation(&self) -> bool {
+        self.etype == TraceEventType::Activation
+    }
+    
+    pub fn is_dispatch(&self) -> bool {
+        self.etype == TraceEventType::Dispatch
+    }
+    
+    pub fn is_preemption(&self) -> bool {
+        self.etype == TraceEventType::Preemption
+    }
+    
+    pub fn is_exit(&self) -> bool {
+        self.etype == TraceEventType::Exit
+    }
+
+    
 }
 
 #[derive(PartialEq, Eq, Debug)]
@@ -133,23 +155,25 @@ where T: AsRef<[TraceEvent]>
 
 #[cfg(test)]
 pub mod tests {
+    use crate::time::Time;
+
     use super::{TraceEvent, TraceEventType, Trace, TraceError};
 
     #[test]
     pub fn test_from() {
         let trace = Trace::from([
-            TraceEvent::new(TraceEventType::Activation, 0, 1),
-            TraceEvent::new(TraceEventType::Activation, 0, 4),
-            TraceEvent::new(TraceEventType::Activation, 0, 7),
-            TraceEvent::new(TraceEventType::Activation, 0, 9)
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(1)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(4)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(7)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(9))
         ]);
 
         let mut events = trace.events();
         
-        assert_eq!(events.next(), Some(&TraceEvent::new(TraceEventType::Activation, 0, 1)));
-        assert_eq!(events.next(), Some(&TraceEvent::new(TraceEventType::Activation, 0, 4)));
-        assert_eq!(events.next(), Some(&TraceEvent::new(TraceEventType::Activation, 0, 7)));
-        assert_eq!(events.next(), Some(&TraceEvent::new(TraceEventType::Activation, 0, 9)));
+        assert_eq!(events.next(), Some(&TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(1))));
+        assert_eq!(events.next(), Some(&TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(4))));
+        assert_eq!(events.next(), Some(&TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(7))));
+        assert_eq!(events.next(), Some(&TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(9))));
         assert_eq!(events.next(), None);
     }
 
@@ -157,11 +181,11 @@ pub mod tests {
     pub fn test_push() -> Result<(), TraceError> {
         let mut trace = Trace::new();
  
-        trace.push(TraceEvent::new(TraceEventType::Activation, 0, 1))?;
-        trace.push(TraceEvent::new(TraceEventType::Activation, 0, 2))?;
-        trace.push(TraceEvent::new(TraceEventType::Activation, 0, 3))?;
+        trace.push(TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(1)))?;
+        trace.push(TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(2)))?;
+        trace.push(TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(3)))?;
 
-        assert!(trace.push(TraceEvent::new(TraceEventType::Activation, 0, 1)).is_err());
+        assert!(trace.push(TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(1))).is_err());
         
         Ok(())
     }
@@ -169,30 +193,30 @@ pub mod tests {
     #[test]
     pub fn test_eq() {
         let t1 = Trace::from([
-            TraceEvent::new(TraceEventType::Activation, 0, 1),
-            TraceEvent::new(TraceEventType::Activation, 0, 4),
-            TraceEvent::new(TraceEventType::Activation, 0, 7),
-            TraceEvent::new(TraceEventType::Activation, 0, 9)
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(1)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(4)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(7)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(9))
         ]);
 
         let t2 = Trace::from([
-            TraceEvent::new(TraceEventType::Activation, 0, 1),
-            TraceEvent::new(TraceEventType::Activation, 0, 4),
-            TraceEvent::new(TraceEventType::Activation, 0, 7),
-            TraceEvent::new(TraceEventType::Activation, 0, 9)
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(1)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(4)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(7)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(9))
         ]);
 
         let t3 = Trace::from([
-            TraceEvent::new(TraceEventType::Activation, 0, 1),
-            TraceEvent::new(TraceEventType::Activation, 0, 7),
-            TraceEvent::new(TraceEventType::Activation, 0, 9)
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(1)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(7)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(9))
         ]);
         
         let t4 = Trace::from([
-            TraceEvent::new(TraceEventType::Activation, 0, 7),
-            TraceEvent::new(TraceEventType::Activation, 0, 1),
-            TraceEvent::new(TraceEventType::Activation, 0, 9),
-            TraceEvent::new(TraceEventType::Activation, 0, 4),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(7)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(1)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(9)),
+            TraceEvent::new(TraceEventType::Activation, 0, Time::from_ns(4)),
         ]);
 
         assert_eq!(t1, t1);
@@ -209,11 +233,11 @@ pub mod tests {
         let t = Trace::from_yaml_file(p)?;
         
         let expected = Trace::from([
-            TraceEvent::new(TraceEventType::Activation, 1, 1),
-            TraceEvent::new(TraceEventType::Dispatch, 1, 2),
-            TraceEvent::new(TraceEventType::Preemption, 1, 3),
-            TraceEvent::new(TraceEventType::Deactivation, 1, 4),
-            TraceEvent::new(TraceEventType::Exit, 1, 5)
+            TraceEvent::new(TraceEventType::Activation, 1, Time::from_ns(1)),
+            TraceEvent::new(TraceEventType::Dispatch, 1, Time::from_ns(2)),
+            TraceEvent::new(TraceEventType::Preemption, 1, Time::from_ns(3)),
+            TraceEvent::new(TraceEventType::Deactivation, 1, Time::from_ns(4)),
+            TraceEvent::new(TraceEventType::Exit, 1, Time::from_ns(5))
         ]);
 
         assert_eq!(t, expected);

@@ -39,7 +39,7 @@ impl ArrivalSequenceSubset {
         // Update min_interarrival
         if let Some(last) = self.last_arrival {
             let new_interarrival = new_arrival.instant - last.instant;
-            if self.min_interarrival == 0 {
+            if self.min_interarrival.is_zero() {
                 self.min_interarrival = new_interarrival;
             } else {
                 self.min_interarrival = self.min_interarrival.min(new_interarrival);
@@ -49,10 +49,10 @@ impl ArrivalSequenceSubset {
         // Update all priorities, compute new period range
         for arr in &mut self.arrivals {
             let l = new_arrival.idx - arr.idx;
-            let t_avg: f64 = (new_arrival.instant - arr.instant) as f64 / l as f64;
-            let error: f64 = self.jitter_bound as f64 / l as f64;
-            let t_min = ((t_avg - error).max(1.0)).ceil() as Period;
-            let t_max = (t_avg + error).floor() as Period;
+            let t_avg: f64 = (new_arrival.instant - arr.instant).to_ns() as f64 / l as f64;
+            let error: f64 = self.jitter_bound.to_ns() as f64 / l as f64;
+            let t_min = Time::from_ns(((t_avg - error).max(1.0)).ceil() as u64);
+            let t_max = Time::from((t_avg + error).floor() as u64);
 
             // Perform intersection of the intervals
             let t_interval_arr = PeriodRange::new(t_min, t_max);
@@ -66,14 +66,14 @@ impl ArrivalSequenceSubset {
             }
 
             // Update t_avg_max and t_avg_min (also for the new arrival)
-            let t_avg_ = t_avg.floor() as Period;
+            let t_avg_ = Time::from_ns(t_avg.floor() as u64);
             arr.t_avg_min = t_avg_.min(arr.t_avg_min);
             arr.t_avg_max = t_avg_.max(arr.t_avg_max);
             new_arrival.t_avg_min = t_avg_.min(new_arrival.t_avg_min);
             new_arrival.t_avg_max = t_avg_.max(new_arrival.t_avg_max);
             // Update priorities
-            arr.buf_prio = arr.t_avg_max - arr.t_avg_min;
-            new_arrival.buf_prio = new_arrival.t_avg_max - new_arrival.t_avg_min;
+            arr.buf_prio = (arr.t_avg_max - arr.t_avg_min).to_ns();
+            new_arrival.buf_prio = (new_arrival.t_avg_max - new_arrival.t_avg_min).to_ns();
         }
 
         // Sort by decreasing priority. Tiebreak: prioritize older observations
@@ -104,8 +104,8 @@ impl ArrivalSequenceSubset {
             pid: pid,
             buf_size: buf_size,
             last_arrival: None,
-            min_interarrival: 0,
-            wcet: 0,
+            min_interarrival: Time::zero(),
+            wcet: Time::zero(),
             tot_observations: 0,
             t_interval: PeriodRange::default(),
             jitter_bound: jitter_bound,
@@ -146,8 +146,8 @@ impl PeriodRange {
 
     pub fn default() -> Self {
         PeriodRange { 
-            t_min: 1,
-            t_max: Period::max_value()-1,
+            t_min: Time::from_ns(1),
+            t_max: Time::from_ns(u64::max_value() - 1),
             is_empty: true,
         }
     }
