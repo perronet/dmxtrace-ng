@@ -36,7 +36,7 @@ pub struct InvocationCycle {
     pub last_event_time : Time,
     pub curr_cost: Cost,    // Total cost (including self-suspension time)
     pub curr_ss_time: Cost, // Self-suspension time
-    pub curr_ss_cnt: Cost,
+    pub curr_ss_cnt: u64,
 
     pub heuristic: IcHeuristic,
     pub timeout: Time, // Only used if heuristic is SuspensionTimeout
@@ -57,24 +57,24 @@ impl InvocationCycle {
     pub fn new(pid: Pid, heuristic: IcHeuristic, timeout: Time) -> InvocationCycle {
         InvocationCycle {
             pid : pid,
-            activation : 0,
+            activation : Time::zero(),
             last_event_type : None,
-            last_event_time : 0,
-            curr_cost : 0,
-            curr_ss_time : 0,
-            curr_ss_cnt : 0,
+            last_event_time : Time::zero(),
+            curr_cost : Time::zero(),
+            curr_ss_time : Time::zero(),
+            curr_ss_cnt: 0, 
             heuristic : heuristic,
             timeout : timeout,
         }
     }
 
     pub fn reset(&mut self) {
-        self.activation = 0;
+        self.activation = Time::zero();
         self.last_event_type = None;
-        self.last_event_time = 0;
-        self.curr_cost = 0;
-        self.curr_ss_time = 0;
-        self.curr_ss_cnt = 0;
+        self.last_event_time = Time::zero();
+        self.curr_cost = Time::zero();
+        self.curr_ss_time = Time::zero();
+        self.curr_ss_cnt = 0; 
     }
 
     // Only a Deactivation, Activation, or Exit can mark the completion of an invocation cycle
@@ -177,12 +177,12 @@ impl InvocationCycle {
                 match self.heuristic {
                     // Every suspension ends a cycle
                     IcHeuristic::Suspension => { // End cycle
-                        assert!(self.curr_ss_time == 0 && self.curr_ss_cnt == 0);
+                        assert!(self.curr_ss_time.is_zero() && self.curr_ss_cnt == 0);
                         let activation = self.activation;
                         let final_cost = self.curr_cost + instant - self.last_event_time;
                         self.reset();
 
-                        Some(Arrival::new(activation, final_cost, 0, 0))
+                        Some(Arrival::new(activation, final_cost, Time::zero(), 0))
                     },
                     // Must wait for next activation to decide if the cycle ended
                     IcHeuristic::SuspensionTimeout => {

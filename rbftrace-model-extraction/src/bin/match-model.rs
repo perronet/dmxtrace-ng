@@ -60,9 +60,10 @@ fn _main(args: Opt) -> AppResult {
     } else {
         /* INCREMENTAL */
         let mut model_extractor = IncrementalSystemModelExtractor::new(extraction_params, SysConf::default());
-        let mut last_update_time = 0;
+        let mut last_update_time = Time::zero();
         let mut can_update = false;
         let mut arrival_cnt = 1; // So that we start at 2 samples
+        let update_interval = Time::from_s(args.update_interval.unwrap() as f64);
 
         for event in trace.events() {
             /* Check if the model could have changed, perform model extraction only in that case */
@@ -72,14 +73,17 @@ fn _main(args: Opt) -> AppResult {
             }
 
             /* Perform model extraction every update_interval seconds or every update_arrival arrivals */
-            if last_update_time == 0 {
+            if last_update_time.is_zero() {
                 last_update_time = event.instant;
             }
-            let last_update_elapsed = ns_to_s(event.instant - last_update_time);
+            
+            let last_update_elapsed = event.instant - last_update_time;
 
             if can_update && 
-               (args.update_interval.is_some() && last_update_elapsed >= args.update_interval.unwrap() ||
-                args.update_arrival.is_some() && arrival_cnt % args.update_arrival.unwrap() == 0) {
+               (args.update_interval.is_some() && 
+               last_update_elapsed >= update_interval ||
+                args.update_arrival.is_some() && 
+                arrival_cnt % args.update_arrival.unwrap() == 0) {
                 
                 model = model_extractor.extract_model();
 

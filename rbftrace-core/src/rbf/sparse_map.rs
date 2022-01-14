@@ -21,7 +21,7 @@ impl SparseMap {
     }
 
     fn update_map(&mut self, p : Point, keep_monotonicity: bool) {
-        while p.delta >= self.bucket_size * (self.capacity as u64) {
+        while p.delta.to_ns() >= self.bucket_size * (self.capacity as u64) {
             self.double_buckets();
         }
         
@@ -101,7 +101,7 @@ impl SparseMap {
 
     pub fn get(&self, delta: Duration) -> Cost {
         let max = self.bucket_size * (self.capacity as u64);
-        if max <= delta { return 0; }
+        if max <= delta.to_ns() { return Time::zero(); }
 
         let mut bi = self.bucket_index_of(delta); // start with biggest bucket index that could contain the cost
         loop {
@@ -110,13 +110,13 @@ impl SparseMap {
                 if el.delta <= delta { return el.cost; } // found
             }
 
-            if bi == 0 { return 0; } // not found
+            if bi == 0 { return Time::zero(); } // not found
             bi -= 1;
         }
     }
 
     pub fn bucket_index_of(&self, delta : Duration) -> usize { 
-        return (delta / self.bucket_size) as usize;
+        return (delta / self.bucket_size).to_ns() as usize;
     }
 
     // Used when a new element cannot fit

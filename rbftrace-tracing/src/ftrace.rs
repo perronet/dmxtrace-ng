@@ -231,19 +231,19 @@ impl FTraceEVG {
                 } else {
                     event_type = TraceEventType::Deactivation;
                 }
-                let event_1 = TraceEvent::new(event_type, prev_pid, raw_event.ts);
+                let event_1 = TraceEvent::new(event_type, prev_pid, Time::from_ns(raw_event.ts));
 
                 // Dispatch
-                let event_2 = TraceEvent::new(TraceEventType::Dispatch, next_pid, raw_event.ts);
+                let event_2 = TraceEvent::new(TraceEventType::Dispatch, next_pid, Time::from_ns(raw_event.ts));
 
                 self.extra_event = Some(event_2);
                 return event_1;
             },
             TraceEventTypeRaw::Wakeup => {
-                return TraceEvent::new(TraceEventType::Activation, raw_event.pid as u32, raw_event.ts);
+                return TraceEvent::new(TraceEventType::Activation, raw_event.pid as u32, Time::from_ns(raw_event.ts));
             },
             TraceEventTypeRaw::Exit => {
-                return TraceEvent::new(TraceEventType::Exit, raw_event.pid as u32, raw_event.ts);
+                return TraceEvent::new(TraceEventType::Exit, raw_event.pid as u32, Time::from_ns(raw_event.ts));
             },
         };
     }

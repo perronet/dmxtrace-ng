@@ -2,7 +2,7 @@ use rbftrace_core::rbf::RbfCurve;
 use rbftrace_core::trace::{Trace, TraceEvent};
 use rbftrace_core::model::{SystemModel, ScalarTaskModel};
 use rbftrace_core::sys_conf::{SysConf};
-use rbftrace_core::time::{Time, ONE_MS};
+use rbftrace_core::time::{Time};
 
 mod mm_scalar;
 mod arrival;
@@ -26,7 +26,7 @@ pub struct ModelExtractionParameters {
 impl Default for ModelExtractionParameters {
     fn default() -> Self {
         Self { 
-            j_max: 1 * ONE_MS, 
+            j_max: Time::from_ms(1.0), 
             rbf_window_size: 1000
         }
     }
@@ -62,7 +62,7 @@ impl IncrementalTaskModelExtractor {
         IncrementalTaskModelExtractor { 
             pid,
             mm: ScalarMM::new(params.get_jmax(), 1000), // TODO the buf_size should be inside ModelExtractionParameters
-            acycle: InvocationCycle::new(pid, IcHeuristic::Suspension, 0), 
+            acycle: InvocationCycle::new(pid, IcHeuristic::Suspension, Time::zero()), 
             current_rbf:RbfCurve::new(pid, params.get_rbf_window_size()), 
             arrival_cnt: 0,
         }
@@ -162,7 +162,7 @@ impl ModelExtractor {
 mod tests {
     use rbftrace_core::{
         sys_conf::{SysConf},
-        time::{Pid, ONE_MS, ONE_US},
+        time::{Pid, Time},
         trace::{Trace, TraceEvent}, model::{ScalarTaskModel, JobArrivalModel}
     };
 
@@ -186,20 +186,30 @@ mod tests {
     pub fn periodic_fixed_exec_time(){
         let mut params = ModelExtractionParameters::default();
         let sys_conf = SysConf::default();
-        params.set_jmax(1 * ONE_MS);
+        params.set_jmax(Time::from_ms(1.0) );
+
 
         let trace = Trace::from([
-            TraceEvent::activation(0, 5 * ONE_MS),
-            TraceEvent::dispatch(0, 5 * ONE_MS),
-            TraceEvent::deactivation(0, 7 * ONE_MS),
+            TraceEvent::activation(0, Time::from_ms(5.0) ),
+
+            TraceEvent::dispatch(0, Time::from_ms(5.0) ),
+
+            TraceEvent::deactivation(0, Time::from_ms(7.0) ),
+
             
-            TraceEvent::activation(0, 15 * ONE_MS),
-            TraceEvent::dispatch(0, 15 * ONE_MS),
-            TraceEvent::deactivation(0, 17 * ONE_MS),
+            TraceEvent::activation(0, Time::from_ms(15.0) ),
+
+            TraceEvent::dispatch(0, Time::from_ms(15.0) ),
+
+            TraceEvent::deactivation(0, Time::from_ms(17.0) ),
+
             
-            TraceEvent::activation(0, 25 * ONE_MS),
-            TraceEvent::dispatch(0,25 * ONE_MS),
-            TraceEvent::deactivation(0, 27 * ONE_MS)
+            TraceEvent::activation(0, Time::from_ms(25.0) ),
+
+            TraceEvent::dispatch(0,Time::from_ms(25.0) ),
+
+            TraceEvent::deactivation(0, Time::from_ms(27.0) )
+
         ]);
 
         let mut extractor = IncrementalTaskModelExtractor::new(params, sys_conf, 0);
@@ -210,12 +220,16 @@ mod tests {
 
         let expected = ScalarTaskModel {
             arrival_model: JobArrivalModel::PeriodicJitterOffset{
-                period: 10 * ONE_MS,
-                jitter: 0 * ONE_MS,
-                offset: 5 * ONE_MS
+                period: Time::from_ms(10.0) ,
+
+                jitter: Time::from_ms(0.0) ,
+
+                offset: Time::from_ms(5.0) 
+
             },
             
-            execution_time: 2 * ONE_MS
+            execution_time: Time::from_ms(2.0) 
+
         };
 
         assert_eq!(
@@ -228,20 +242,21 @@ mod tests {
     pub fn periodic(){
         let mut params = ModelExtractionParameters::default();
         let sys_conf = SysConf::default();
-        params.set_jmax(1 * ONE_MS);
+        params.set_jmax(Time::from_ms(1.0) );
+
 
         let trace = Trace::from([
-            TraceEvent::activation(0, 5 * ONE_MS),
-            TraceEvent::dispatch(0, 5 * ONE_MS),
-            TraceEvent::deactivation(0, 7 * ONE_MS),
+            TraceEvent::activation(0, Time::from_ms(5.)),
+            TraceEvent::dispatch(0, Time::from_ms(5.)),
+            TraceEvent::deactivation(0, Time::from_ms(7.)),
             
-            TraceEvent::activation(0, 15 * ONE_MS),
-            TraceEvent::dispatch(0, 15 * ONE_MS),
-            TraceEvent::deactivation(0, 18 * ONE_MS),
+            TraceEvent::activation(0, Time::from_ms(15.)),
+            TraceEvent::dispatch(0, Time::from_ms(15.)),
+            TraceEvent::deactivation(0, Time::from_ms(18.)),
             
-            TraceEvent::activation(0, 25 * ONE_MS),
-            TraceEvent::dispatch(0,25 * ONE_MS),
-            TraceEvent::deactivation(0, 26 * ONE_MS)
+            TraceEvent::activation(0, Time::from_ms(25.)),
+            TraceEvent::dispatch(0,Time::from_ms(25.)),
+            TraceEvent::deactivation(0, Time::from_ms(26.))
         ]);
 
         let mut extractor = IncrementalTaskModelExtractor::new(params, sys_conf, 0);
@@ -252,12 +267,16 @@ mod tests {
 
         let expected = ScalarTaskModel {
             arrival_model: JobArrivalModel::PeriodicJitterOffset{
-                period: 10 * ONE_MS,
-                jitter: 0 * ONE_MS,
-                offset: 5 * ONE_MS
+                period: Time::from_ms(10.0) ,
+
+                jitter: Time::from_ms(0.0) ,
+
+                offset: Time::from_ms(5.0) 
+
             },
             
-            execution_time: 3 * ONE_MS
+            execution_time: Time::from_ms(3.0) 
+
         };
 
         assert_eq!(
@@ -272,20 +291,30 @@ mod tests {
     pub fn periodic_with_jitter(){
         let mut params = ModelExtractionParameters::default();
         let sys_conf = SysConf::default();
-        params.set_jmax(1 * ONE_MS);
+        params.set_jmax(Time::from_ms(1.0) );
+
 
         let trace = Trace::from([
-            TraceEvent::activation(0, 5_500 * ONE_US),
-            TraceEvent::dispatch(0, 5_500 * ONE_US),
-            TraceEvent::deactivation(0, 7_500 * ONE_US),
+            TraceEvent::activation(0, Time::from_ms(5.5) ),
+
+            TraceEvent::dispatch(0, Time::from_ms(5.5) ),
+
+            TraceEvent::deactivation(0, Time::from_ms(7.5) ),
+
             
-            TraceEvent::activation(0, 15_300 * ONE_US),
-            TraceEvent::dispatch(0, 15_300 * ONE_US),
-            TraceEvent::deactivation(0, 18_300 * ONE_US),
+            TraceEvent::activation(0, Time::from_ms(15.3) ),
+
+            TraceEvent::dispatch(0, Time::from_ms(15.3) ),
+
+            TraceEvent::deactivation(0, Time::from_ms(18.3) ),
+
             
-            TraceEvent::activation(0, 25_000 * ONE_US),
-            TraceEvent::dispatch(0,25_000 * ONE_US),
-            TraceEvent::deactivation(0, 26_000 * ONE_US)
+            TraceEvent::activation(0, Time::from_ms(25.0) ),
+
+            TraceEvent::dispatch(0,Time::from_ms(25.0) ),
+
+            TraceEvent::deactivation(0, Time::from_ms(26.0) )
+
         ]);
 
         let mut extractor = IncrementalTaskModelExtractor::new(params, sys_conf, 0);
@@ -296,12 +325,16 @@ mod tests {
 
         let expected = ScalarTaskModel {
             arrival_model: JobArrivalModel::PeriodicJitterOffset{
-                period: 10 * ONE_MS,
-                jitter: 500 * ONE_US,
-                offset: 5 * ONE_MS
+                period: Time::from_ms(10.0) ,
+
+                jitter: Time::from_ms(500.0) ,
+
+                offset: Time::from_ms(5.0) 
+
             },
             
-            execution_time: 3 * ONE_MS
+            execution_time: Time::from_ms(3.0) 
+
         };
 
         assert_eq!(
@@ -314,29 +347,38 @@ mod tests {
     pub fn sporadic(){
         let mut params = ModelExtractionParameters::default();
         let sys_conf = SysConf::default();
-        params.set_jmax(500 * ONE_US);
+        params.set_jmax(Time::from_us(500.0) );
+
 
         let trace = Trace::from([
-            TraceEvent::activation(0, 2_000 * ONE_US),
-            TraceEvent::dispatch(0, 2_000 * ONE_US),
-            TraceEvent::deactivation(0, 2_100 * ONE_US),
+            TraceEvent::activation(0, Time::from_ms(2.0) ),
+            TraceEvent::dispatch(0, Time::from_ms(2.0) ),
+            TraceEvent::deactivation(0, Time::from_ms(2.1) ),
+
             
-            TraceEvent::activation(0, 5_000 * ONE_US),
-            TraceEvent::dispatch(0, 5_000 * ONE_US),
-            TraceEvent::deactivation(0, 5_100 * ONE_US),
+            TraceEvent::activation(0, Time::from_ms(5.0) ),
+            TraceEvent::dispatch(0, Time::from_ms(5.0) ),
+            TraceEvent::deactivation(0, Time::from_ms(5.1) ),
+
             
-            TraceEvent::activation(0, 6_000 * ONE_US),
-            TraceEvent::dispatch(0, 6_000 * ONE_US),
-            TraceEvent::deactivation(0, 6_100 * ONE_US),
+            TraceEvent::activation(0, Time::from_ms(6.0)),
+            TraceEvent::dispatch(0, Time::from_ms(6.0)),
+            TraceEvent::deactivation(0, Time::from_ms(6.1)),
+
             
-            TraceEvent::activation(0, 7_000 * ONE_US),
-            TraceEvent::dispatch(0, 7_000 * ONE_US),
-            TraceEvent::deactivation(0, 7_100 * ONE_US),
+            TraceEvent::activation(0, Time::from_ms(7.0)),
+            TraceEvent::dispatch(0, Time::from_ms(7.0)),
+            TraceEvent::deactivation(0, Time::from_ms(7.1)),
+
             
-            TraceEvent::activation(0, 9_000 * ONE_US),
-            TraceEvent::dispatch(0, 9_000 * ONE_US),
-            TraceEvent::deactivation(0, 9_100 * ONE_US),
+            TraceEvent::activation(0, Time::from_ms(9.0)),
+            TraceEvent::dispatch(0, Time::from_ms(9.0)),
+            TraceEvent::deactivation(0, Time::from_ms(9.1)),
+
+
         ]);
+        
+        Time::from_ms(1.0).to_ns();
 
         let mut extractor = IncrementalTaskModelExtractor::new(params, sys_conf, 0);
 
@@ -344,7 +386,7 @@ mod tests {
             extractor.push_event(*event);
         }
 
-        let expected = ScalarTaskModel::sporadic(100 * ONE_US, 1 * ONE_MS);
+        let expected = ScalarTaskModel::sporadic(Time::from_us(100.0), Time::from_ms(1.));
 
         assert_eq!(
             extractor.extract_scalar_model(),
