@@ -1,4 +1,4 @@
-use rbftrace_core::sys_conf::SysConf;
+use rbftrace_core::sys_conf::{SysConf, Pid};
 use rbftrace_core::model::SystemModel;
 use rbftrace_model_extraction::{
     ModelExtractor, 

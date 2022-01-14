@@ -166,7 +166,7 @@ impl ModelExtractor {
 mod tests {
     use rbftrace_core::{
         sys_conf::{SysConf},
-        time::{Pid, Time},
+        time::{Time},
         trace::{Trace, TraceEvent}, model::{ScalarTaskModel, JobArrivalModel}
     };
 

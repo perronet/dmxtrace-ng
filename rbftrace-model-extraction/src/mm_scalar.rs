@@ -1,6 +1,6 @@
 use std::{collections::HashMap};
 
-use rbftrace_core::{time::*};
+use rbftrace_core::{time::*, sys_conf::Pid};
 // use rbftrace_core::model::scalar::*;
 use crate::arrival::{
     arr::Arrival,

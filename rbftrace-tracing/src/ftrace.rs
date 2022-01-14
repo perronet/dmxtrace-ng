@@ -1,4 +1,5 @@
 use std::fs;
+use rbftrace_core::sys_conf::Pid;
 use sysinfo::{System, SystemExt};
 use std::convert::TryInto;
 
