@@ -36,21 +36,19 @@ impl SparseMap {
             cost = c.peek_prev();
             match cost {
                 None => break, //no cost found
-                Some(point) => 
-                {
-                    if point.delta == p.delta {  // same cost found
-                        point.cost = p.cost;
-                        found = true;
-                        c.prev(); // go back by one so that next() is the new point
-                        break; 
-                    }
-                    else if point.delta < p.delta { // position found
-                        c.insert(p);
-                        self.count += 1;
-                        found = true;
-                        break;
-                    }
+                Some(point) if point.delta == p.delta => {  // same cost found
+                    point.cost = p.cost;
+                    found = true;
+                    c.prev(); // go back by one so that next() is the new point
+                    break; 
                 }
+                Some(point) if point.delta < p.delta => { // position found
+                    c.insert(p);
+                    self.count += 1;
+                    found = true;
+                    break;
+                }
+                Some(_) => {}
             };
             c.prev();
         }
@@ -116,7 +114,7 @@ impl SparseMap {
     }
 
     pub fn bucket_index_of(&self, delta : Duration) -> usize { 
-        return (delta / self.bucket_size).to_ns() as usize;
+        (delta / self.bucket_size).to_ns() as usize
     }
 
     // Used when a new element cannot fit
@@ -133,7 +131,7 @@ impl SparseMap {
 
     pub fn new(capacity: usize) -> Self {
         let mut map = SparseMap {
-            capacity : capacity,
+            capacity,
             buckets : Vec::<LinkedList<Point>>::with_capacity(capacity),
             bucket_size : 1,
             count : 0,
@@ -203,7 +201,7 @@ impl PartialEq for SparseMap {
             }
         }
 
-        return true
+        true
     }
 }
 

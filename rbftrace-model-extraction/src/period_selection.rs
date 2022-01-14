@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 use rbftrace_core::time::*;
 use crate::arrival::arrival_subset::PeriodRange;
 
@@ -24,21 +26,20 @@ pub fn pick_period_heuristic(feasible_periods: PeriodRange) -> Period {
 
         let roundness_left = roundness(left_mult.to_ns());
         let roundness_right = roundness(right_mult.to_ns());
-
+        
         // Pick roundest number
-        if roundness_left < roundness_right {
-            return right_mult;
-        } else if roundness_left > roundness_right {
-            return left_mult;
-        } else {
-            // Tiebreak: smaller distance to median
-            if left_dist > right_dist {
-                return right_mult;
-            } else {
-                // Tiebreak: smaller period
-                return left_mult;
+        return match roundness_left.cmp(&roundness_right) {
+            Ordering::Less => right_mult,
+            Ordering::Greater => left_mult,
+            Ordering::Equal => {
+                // Tiebreak: smaller distance to median
+                match left_dist.cmp(&right_dist) {
+                    Ordering::Greater => right_mult,
+                    // Tiebreak: smaller period
+                    _ => left_mult
+                }
             }
-        }
+        };
     }
 
     Time::zero()

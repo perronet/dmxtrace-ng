@@ -57,9 +57,9 @@ impl ArrivalSequenceSubset {
             // Perform intersection of the intervals
             let t_interval_arr = PeriodRange::new(t_min, t_max);
             let intersection = self.t_interval.intersect(&t_interval_arr);
-            if intersection.is_some() {
+            if let Some(range) = intersection {
                 self.t_interval.is_empty = false;
-                self.t_interval = intersection.unwrap();
+                self.t_interval = range; 
             } else {
                 self.t_interval.is_empty = true;
                 return None; // TODO is it okay to stop updating and just return?
@@ -101,14 +101,14 @@ impl ArrivalSequenceSubset {
     pub fn new(pid: Pid, buf_size: usize, jitter_bound: Jitter) -> Self {
         ArrivalSequenceSubset { 
             arrivals: Vec::with_capacity(buf_size),
-            pid: pid,
-            buf_size: buf_size,
+            pid,
+            buf_size,
             last_arrival: None,
             min_interarrival: Time::zero(),
             wcet: Time::zero(),
             tot_observations: 0,
             t_interval: PeriodRange::default(),
-            jitter_bound: jitter_bound,
+            jitter_bound,
         }
     }
 }
@@ -125,7 +125,7 @@ impl PeriodRange {
         if other.t_min > self.t_max || self.t_min > other.t_max {
             return None;
         }
-        return Some(PeriodRange::new(self.t_min.max(other.t_min), self.t_max.min(other.t_max)));
+        Some(PeriodRange::new(self.t_min.max(other.t_min), self.t_max.min(other.t_max)))
     }
 
     pub fn contains(&self, num: Period) -> bool {
@@ -138,8 +138,8 @@ impl PeriodRange {
 
     pub fn new(t_min: Period, t_max: Period) -> Self {
         PeriodRange { 
-            t_min: t_min,
-            t_max: t_max,
+            t_min,
+            t_max,
             is_empty: false,
         }
     }

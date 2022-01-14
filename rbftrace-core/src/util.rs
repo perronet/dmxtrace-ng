@@ -10,12 +10,12 @@ pub fn run_cmd_opt(cmd: String) -> Option<String> {
         Ok(out) => { 
             let s = String::from_utf8_lossy(&out.stdout).to_string();
             if s.is_empty() {
-                return None;
+                None
             }
             else {
-                return Some(s);
+                Some(s)
             }
         },
-        Err(_) => { return None },
+        Err(_) => None 
     }
 }

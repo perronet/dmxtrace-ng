@@ -111,7 +111,7 @@ impl Trace {
             // This happens when the thread gets immediately scheduled
             if prev.instant > e.instant {
                 let pos = self.events.len();
-                return Err(TraceError::Monotonocity{pos: pos, prev: *prev, event: e})
+                return Err(TraceError::Monotonocity{pos, prev: *prev, event: e})
             }
         }
 
@@ -139,7 +139,13 @@ impl Trace {
             }
         }
 
-        return Ok(ret)
+        Ok(ret)
+    }
+}
+
+impl Default for Trace {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

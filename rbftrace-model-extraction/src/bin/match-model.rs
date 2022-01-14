@@ -6,7 +6,6 @@ use rbftrace_model_extraction::{
     ModelExtractionParameters
 };
 use structopt::StructOpt;
-use serde_yaml;
 use std::fs::{
     OpenOptions,
     remove_file,
@@ -272,7 +271,7 @@ mod dd {
 
             for pid in model.pids() {
                 let scalar_model = model.get_scalar_models(*pid);
-                let m = scalar_model.and(Some(scalar_model.unwrap().clone()));
+                let m = scalar_model.and(Some(*scalar_model.unwrap()));
 
                 output.scalar_models.insert(*pid, m);
                 let output_rbf = OutputRbf::from(model.get_rbf(*pid).unwrap());
@@ -291,7 +290,7 @@ mod dd {
                 let mut entry = (samples, BTreeMap::new());
                 for pid in model.pids() {
                     let scalar_model = model.get_scalar_models(*pid);
-                    let m = scalar_model.and(Some(scalar_model.unwrap().clone()));
+                    let m = scalar_model.and(Some(*scalar_model.unwrap()));
     
                     entry.1.insert(*pid, m);
                 }

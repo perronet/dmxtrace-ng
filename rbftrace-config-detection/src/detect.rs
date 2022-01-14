@@ -18,7 +18,7 @@ pub fn detect_sys_conf() -> SysConf {
         \nthat got disabled after running the above command.\
         \nThis is why it is recommended to disable hyperthreading through the BIOS\
         \nor with kernel parameter 'maxcpus=n', where n is the number of real cores.\n\n");
-        write!(std::io::stderr(), "*** Do you want to disable hyperthreading and continue? (Press any key to continue) ***").unwrap();
+        eprint!("*** Do you want to disable hyperthreading and continue? (Press any key to continue) ***");
         std::io::stderr().flush().unwrap();
         let _ = std::io::stdin().read(&mut [0u8]).unwrap();
         run_cmd("echo off | sudo tee /sys/devices/system/cpu/smt/control".to_string());
@@ -62,5 +62,5 @@ pub fn detect_sys_conf() -> SysConf {
 
     detect_max_runtimes(&mut sys_conf);
 
-    return sys_conf;
+    sys_conf
 }
