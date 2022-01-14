@@ -4,8 +4,8 @@ use std::env;
 use std::process::Command;
 use std::path::PathBuf;
 
-static LIB_DIR: &'static str = "vendor";
-static LIB_OUTPUT_DIR: &'static str = "vendor/output/usr/lib64";
+static LIB_DIR: &str = "vendor";
+static LIB_OUTPUT_DIR: &str = "vendor/output/usr/lib64";
 
 fn main() {
     // Tell Cargo that if the given file changes, to rerun this build script.

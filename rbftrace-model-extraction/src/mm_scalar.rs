@@ -40,26 +40,28 @@ pub struct ScalarMM {
 impl ScalarMM {
 
     pub fn update_internal_state(&mut self, pid: Pid, arrival: Arrival) {
-            let arr_seq_ref = self.arrival_buffers.entry(pid).or_insert(
-                ArrivalSequenceSubset::new(pid, self.buf_size, self.jitter_bound)
-            );
+        let buf_size = self.buf_size;
+        let jitter_bound = self.jitter_bound;
+            let arr_seq_ref = self.arrival_buffers
+                                                         .entry(pid)
+                                                         .or_insert_with(move || ArrivalSequenceSubset::new(pid, buf_size, jitter_bound));
             arr_seq_ref.add_arrival(arrival); // Internally computes the feasible period range
     }
 
     pub fn extract_model(&self, pid: Pid) -> Option<ScalarTaskModel>{
         let arr_seq = self.arrival_buffers.get(&pid)?;
 
-        let mut matched = MatchedModels::default();
-        matched.sporadic = match_sporadic(arr_seq);
-        matched.pjitter_offset = match_pjitter_offset(arr_seq, self.jitter_bound);
+        let mut matched = MatchedModels {
+            sporadic: match_sporadic(arr_seq),
+            pjitter_offset: match_pjitter_offset(arr_seq, self.jitter_bound),
+            ..Default::default()
+        };
 
         if let Some(m) = matched.pjitter_offset {
             matched.pjitter = m.pjo_to_pj();
         }
-        // Pick a model out of the matched ones
-        let chosen = disambiguate_model(&matched);
-
-        chosen
+        // Pick a model out of the matched ones and return it
+        disambiguate_model(&matched)
     }
 
 
@@ -127,7 +129,7 @@ fn disambiguate_model(models: &MatchedModels) -> Option<ScalarTaskModel> {
 }
 
 /// Checks if the period fits in the trace, returns the jitter and offset for the best fit
-fn fit_period(arrivals: &Vec<Arrival>, p: Period, j_bound: Jitter) -> Option<(Jitter, Offset)> {
+fn fit_period(arrivals: &[Arrival], p: Period, j_bound: Jitter) -> Option<(Jitter, Offset)> {
     let mut jitter: i64; // Can be negative, in which case the period doesn't fit
     let mut max_jitter: Jitter = Time::zero();
     let mut max_error: u64 = 0;
@@ -135,7 +137,7 @@ fn fit_period(arrivals: &Vec<Arrival>, p: Period, j_bound: Jitter) -> Option<(Ji
     let mut t: i64;
     let mut fit_found = false;
 
-    let mut arrivals_sorted = arrivals.clone();
+    let mut arrivals_sorted = arrivals.to_vec();
     arrivals_sorted.sort_by(|a, b| a.idx.cmp(&b.idx));
 
     let mut first_arr_jitter: u64 = 0;
@@ -185,5 +187,6 @@ fn fit_period(arrivals: &Vec<Arrival>, p: Period, j_bound: Jitter) -> Option<(Ji
 
         return Some((max_jitter, Time::from_ns(offset as u64) as Offset));
     }
-    return None;
+
+    None
 }

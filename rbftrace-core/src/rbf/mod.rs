@@ -1,4 +1,4 @@
-use std::collections::VecDeque;
+use std::{collections::VecDeque, cmp::Ordering};
 use serde::{Serialize, Deserialize};
 
 use crate::time::*;
@@ -15,8 +15,8 @@ pub struct Point {
 impl Point {
     pub fn new(delta: Duration, cost: Cost) -> Self {
         Point {
-            delta: delta,
-            cost: cost,
+            delta,
+            cost,
         }
     }
 }
@@ -73,7 +73,7 @@ impl RbfCurve {
         self.wcet = self.wcet.max(cost); // TODO could just return the cost for key 0
     }
 
-    pub fn add_arrivals(&mut self, arrivals: &Vec<(Time, Cost)>) {
+    pub fn add_arrivals(&mut self, arrivals: &[(Time, Cost)]) {
         for (t, c) in arrivals {
             self.add_arrival(*t, *c);
         }
@@ -81,7 +81,7 @@ impl RbfCurve {
 
     // Returns the lower nearest cost to delta (we only store the steps)
     pub fn get(&self, delta: Duration) -> Cost {
-        return self.curve.get(delta);
+        self.curve.get(delta)
     }
 
     pub fn sum(&mut self, other: &RbfCurve) {
@@ -96,23 +96,26 @@ impl RbfCurve {
 
         // Add the point with the lowest delta
         while let (Some(p_1), Some(p_2)) = (point_1, point_2) {
-            if p_1.delta == p_2.delta {
-                self.curve.insert(Point::new(p_1.delta, p_1.cost + p_2.cost));
+            match p_1.delta.cmp(&p_2.delta) {
+                Ordering::Equal => {
+                    self.curve.insert(Point::new(p_1.delta, p_1.cost + p_2.cost));
 
-                last_cost_1 = p_1.cost + p_2.cost;
-                last_cost_2 = p_1.cost + p_2.cost;
-                point_1 = curve_1.next();
-                point_2 = curve_2.next();
-            } else if p_1.delta < p_2.delta {
-                self.curve.insert(Point::new(p_1.delta, p_1.cost + last_cost_2));
+                    last_cost_1 = p_1.cost + p_2.cost;
+                    last_cost_2 = p_1.cost + p_2.cost;
+                    point_1 = curve_1.next();
+                    point_2 = curve_2.next();
+                },
+                Ordering::Less => {
+                    self.curve.insert(Point::new(p_1.delta, p_1.cost + last_cost_2));
 
-                last_cost_1 = p_1.cost;
-                point_1 = curve_1.next();
-            } else {
-                self.curve.insert(Point::new(p_2.delta, p_2.cost + last_cost_1));
-
-                last_cost_2 = p_2.cost;
-                point_2 = curve_2.next();
+                    last_cost_1 = p_1.cost;
+                    point_1 = curve_1.next();
+                }
+                _ => {
+                    self.curve.insert(Point::new(p_2.delta, p_2.cost + last_cost_1));
+                    last_cost_2 = p_2.cost;
+                    point_2 = curve_2.next();
+                }
             }
         }
 
@@ -138,7 +141,8 @@ impl RbfCurve {
         for point in &self.curve {
             print!("[{} : {}] ", point.delta, point.cost);
         }
-        print!("\n");
+        
+        println!();
     }
 
 
@@ -147,10 +151,10 @@ impl RbfCurve {
         curve.add(Point::new(Time::zero(), Time::zero()));
         RbfCurve { 
             last_arrivals_window: VecDeque::with_capacity(window_size+1),
-            window_size: window_size,
-            curve: curve,
+            window_size,
+            curve,
             wcet: Time::zero(),
-            pid: pid,
+            pid,
             prio: 0,
         }
     }

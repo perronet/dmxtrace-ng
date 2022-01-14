@@ -124,9 +124,9 @@ pub struct Cluster {
 impl Cluster {
     pub fn new(id: u32, cpus: Vec<Cpu>, threads: Vec<ThreadInfo>) -> Self {
         Cluster {
-            id: id,
-            cpus: cpus,
-            threads: threads,
+            id,
+            cpus,
+            threads,
         }
     }
 }

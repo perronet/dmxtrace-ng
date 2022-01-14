@@ -81,7 +81,7 @@ impl IncrementalTaskModelExtractor {
             }
         }
 
-        return false
+        false
     }
 
     /// Returns None if there are less than 2 arrivals.
@@ -105,16 +105,20 @@ impl IncrementalSystemModelExtractor {
     pub fn new(params: ModelExtractionParameters, sys_conf: SysConf) -> IncrementalSystemModelExtractor {
         IncrementalSystemModelExtractor {
             extraction_params: params,
-            sys_conf: sys_conf,
+            sys_conf,
             extractors: HashMap::new(),
         }
     }
 
     /// Returns true if the model could have changed
     pub fn push_event(&mut self, event: &TraceEvent) -> bool {
+        let params = self.extraction_params;
+        let sys_conf = self.sys_conf.clone();
         self.extractors
             .entry(event.pid)
-            .or_insert(IncrementalTaskModelExtractor::new(self.extraction_params.clone(), self.sys_conf.clone(), event.pid))
+            .or_insert_with(|| {
+              IncrementalTaskModelExtractor::new(params, sys_conf, event.pid)  
+            })
             .push_event(*event)
     }
 
@@ -177,9 +181,7 @@ mod tests {
         let extractor = ModelExtractor::new(params, sys_conf);
         let model = extractor.extract_model(trace);
 
-        let pids = model.pids().collect::<Vec<&Pid>>();
-
-        assert!(pids.is_empty());
+        assert!(model.pids().next().is_none());
     }
 
     #[test]

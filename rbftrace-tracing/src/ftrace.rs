@@ -86,14 +86,14 @@ impl FTraceEVG {
             }
 
             /*** Check if event is relevant. If not, read another. ***/
-            if result.is_some() {
+            if let Some(e) = result {
                 self.processed_events_all += 1;
-                if !self.target_pids.contains(&result.unwrap().pid) {
+                if !self.target_pids.contains(&e.pid) {
                     continue;
                 }
                 self.processed_events += 1;
 
-                if result.unwrap().etype == TraceEventType::Exit {
+                if e.etype == TraceEventType::Exit {
                     self.exit_cnt += 1; // TODO might be useless, the idea is to avoid parsing after the exit events have been observed, and just flush the pipes
                 }
 
@@ -148,30 +148,30 @@ impl FTraceEVG {
 }
 
 impl FTraceEVG {
-    pub fn new(target_pids: &Vec<Pid>, rt_pids: &Vec<Pid>, duration: u64, bufsize: u32) -> Self {
+    pub fn new(target_pids: &[Pid], rt_pids: &[Pid], duration: u64, bufsize: u32) -> Self {
         let s = System::new();
         let cpu_cnt: i32 = s.processors().len().try_into().unwrap();
         let tracefs = trace_cmd::create_tracefs();
         let recorders = trace_cmd::init_recorders(tracefs, cpu_cnt);
         
         FTraceEVG {
-            target_pids: target_pids.clone(),
-            rt_pids: rt_pids.clone(),
+            rt_pids: Vec::from(rt_pids),
+            target_pids: Vec::from(target_pids),
             exit_cnt: 0,
             processed_events: 0,
             processed_events_all: 0,
             start_time: std::time::Instant::now(), // Will be set when reading the first event
-            recorders_stopped: false,
             extra_event: None,
+            recorders_stopped: false,
             
-            duration: duration,
+            duration,
             ftrace_bufsize: bufsize,
 
             ids: EventsId::from_tracefs(tracefs),
 
-            tracefs: tracefs,
-            recorders: recorders,
-            cpu_cnt: cpu_cnt,
+            tracefs,
+            recorders,
+            cpu_cnt,
         }
     }
 
@@ -237,15 +237,15 @@ impl FTraceEVG {
                 let event_2 = TraceEvent::new(TraceEventType::Dispatch, next_pid, Time::from_ns(raw_event.ts));
 
                 self.extra_event = Some(event_2);
-                return event_1;
+                event_1
             },
             TraceEventTypeRaw::Wakeup => {
-                return TraceEvent::new(TraceEventType::Activation, raw_event.pid as u32, Time::from_ns(raw_event.ts));
+                TraceEvent::new(TraceEventType::Activation, raw_event.pid as u32, Time::from_ns(raw_event.ts))
             },
             TraceEventTypeRaw::Exit => {
-                return TraceEvent::new(TraceEventType::Exit, raw_event.pid as u32, Time::from_ns(raw_event.ts));
+                TraceEvent::new(TraceEventType::Exit, raw_event.pid as u32, Time::from_ns(raw_event.ts))
             },
-        };
+        }
     }
 }
 
@@ -282,7 +282,7 @@ impl EventsId {
 /* https://elixir.bootlin.com/linux/v5.6/source/include/linux/sched.h#L76 */
 fn is_preemption(raw_event: &trace_cmd::rbftrace_event_raw) -> bool {
     // The *current* state of the previous process is "Runnable"
-    return raw_event.prev_state == 0 || raw_event.prev_state == 256;
+    raw_event.prev_state == 0 || raw_event.prev_state == 256
 }
 
 /* Cleanup on ctrl+C */

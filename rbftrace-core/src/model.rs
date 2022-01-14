@@ -24,21 +24,21 @@ impl ScalarTaskModel {
     pub fn sporadic(execution_time: Time, mit: Time) -> ScalarTaskModel {
         ScalarTaskModel {
             arrival_model: JobArrivalModel::Sporadic(mit),
-            execution_time: execution_time
+            execution_time
         }
     }
     
     pub fn periodic_jitter(execution_time: Time, period: Time, jitter: Time) -> ScalarTaskModel {
         ScalarTaskModel {
             arrival_model: JobArrivalModel::PeriodicJitter{period, jitter},
-            execution_time: execution_time
+            execution_time
         }
     }
     
     pub fn periodic_jitter_offset(execution_time: Time, period: Time, jitter: Time, offset: Time) -> ScalarTaskModel {
         ScalarTaskModel {
             arrival_model: JobArrivalModel::PeriodicJitterOffset{period, offset, jitter},
-            execution_time: execution_time
+            execution_time
         }
     }
 
@@ -90,7 +90,7 @@ pub struct SystemModel {
 impl SystemModel {
     pub fn new(sys_conf: SysConf) -> SystemModel {
         SystemModel{
-            sys_conf: sys_conf,
+            sys_conf,
             scalar_models: BTreeMap::new(),
             rbfs: BTreeMap::new()
         }

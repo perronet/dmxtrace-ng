@@ -49,22 +49,22 @@ pub enum IcHeuristic {
 
 impl IcHeuristic {
     pub fn equals(&self, m: IcHeuristic) -> bool {
-        return std::mem::discriminant(self) == std::mem::discriminant(&m);
+        std::mem::discriminant(self) == std::mem::discriminant(&m)
     }
 }
 
 impl InvocationCycle {
     pub fn new(pid: Pid, heuristic: IcHeuristic, timeout: Time) -> InvocationCycle {
         InvocationCycle {
-            pid : pid,
+            pid,
             activation : Time::zero(),
             last_event_type : None,
             last_event_time : Time::zero(),
             curr_cost : Time::zero(),
             curr_ss_time : Time::zero(),
             curr_ss_cnt: 0, 
-            heuristic : heuristic,
-            timeout : timeout,
+            heuristic,
+            timeout,
         }
     }
 

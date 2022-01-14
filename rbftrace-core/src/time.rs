@@ -41,37 +41,35 @@ impl Time {
     }
     
     pub fn to_us(&self) -> f64 {
-        (self.ns as f64) / ((10 as f64).powi(3))
+        (self.ns as f64) / (10_f64.powi(3))
     }
 
     pub fn from_us(us: f64) -> Self {
-        let ns = (us * ((10 as f64).powi(3))) as u64;
+        let ns = (us * (10_f64.powi(3))) as u64;
         
         Time::from_ns(ns)
     }
     
     pub fn to_ms(&self) -> f64 {
-        (self.ns as f64) / ((10 as f64).powi(6))
+        (self.ns as f64) / (10_f64.powi(6))
     }
 
     pub fn from_ms(ms: f64) -> Self {
-        let ns = (ms * ((10 as f64).powi(6))) as u64;
+        let ns = (ms * (10_f64.powi(6))) as u64;
         
         Time::from_ns(ns)
     }
 
     
     pub fn from_s(s: f64) -> Self {
-        let ns = (s*((10 as f64).powi(9))) as u64;
+        let ns = (s*((10_f64).powi(9))) as u64;
         
         Time::from_ns(ns)
     }
 
     pub fn to_s(&self) -> f64 {
-        (self.ns as f64) / ((10 as f64).powi(9))
+        (self.ns as f64) / ((10_f64).powi(9))
     }
-
-
 }
 
 impl From<u64> for Time {
@@ -80,9 +78,9 @@ impl From<u64> for Time {
     }
 }
 
-impl Into<u64> for Time {
-    fn into(self) -> u64 {
-        self.ns
+impl From<Time> for u64 {
+    fn from(val: Time) -> Self {
+        val.ns
     }
 }
 
@@ -159,7 +157,7 @@ impl DivAssign<float_type> for Time {
 }
 
 #[duplicate(
-    int_type; [u8]; [u16]; [u32]; [u64];[usize]
+    int_type; [u8]; [u16]; [u32]; [u64]; [usize];
 )]
 impl Mul<int_type> for Time {
     type Output = Time;

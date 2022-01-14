@@ -28,31 +28,35 @@ pub fn get_multiproc_type() -> MultiprocType {
 }
 
 /* Global contraints are slightly relaxed: unmovable pinned kthreads are not considered */
-pub fn check_global(rt_pids: &Vec<Pid>) -> bool {
+pub fn check_global(rt_pids: &[Pid]) -> bool {
     let all_cpu_vec = all_cpu_mask_vec();
-    for pid in filter_unmovable_pinned_kthreads(&rt_pids) {
+    
+    for pid in filter_unmovable_pinned_kthreads(rt_pids) {
         let affinity = get_affinity(&pid).unwrap();
         if affinity != all_cpu_vec {
             return false;
         }
     }
-    return true;
+
+    true
 }
 
-pub fn check_partitioned(rt_pids: &Vec<Pid>) -> bool {
+pub fn check_partitioned(rt_pids: &[Pid]) -> bool {
     for pid in rt_pids {
-        let affinity = get_affinity(&pid).unwrap();
+        let affinity = get_affinity(pid).unwrap();
+
         if affinity.len() != 1 {
             return false;
         }
     }
-    return true;
+
+    true
 }
 
-pub fn check_clustered(rt_pids: &Vec<Pid>, fixed_cluster_size: bool) -> Option<Vec<Cluster>> {
+pub fn check_clustered(rt_pids: &[Pid], fixed_cluster_size: bool) -> Option<Vec<Cluster>> {
     let mut cluster_set: Vec<HashSet<Cpu>> = Vec::new();
     let mut ret: Vec<Cluster> = Vec::new();
-    let rt_pids_filtered = filter_unmovable_pinned_kthreads(&rt_pids);
+    let rt_pids_filtered = filter_unmovable_pinned_kthreads(rt_pids);
     let cluster_size = get_affinity(&rt_pids_filtered[0]).unwrap().len();
     for pid in rt_pids_filtered {
         let affinity = get_affinity(&pid).unwrap();
@@ -73,17 +77,17 @@ pub fn check_clustered(rt_pids: &Vec<Pid>, fixed_cluster_size: bool) -> Option<V
         ret.push(Cluster::new(cluster_idx as u32, Vec::from_iter(i.clone()), Vec::new()));
     }
 
-    return Some(ret);
+    Some(ret)
 }
 
-pub fn empty_mask_present(rt_pids: &Vec<Pid>) -> bool {
+pub fn empty_mask_present(rt_pids: &[Pid]) -> bool {
     for pid in rt_pids {
-        let affinity = get_affinity(&pid);
+        let affinity = get_affinity(pid);
         if affinity.unwrap().is_empty() {
-            eprint!("WARNING: Process {} has an empty affinity mask! Please assign an affinity mask. \
-            Did you disable hyperthreading without reassigning affinity masks afterwards?\n", pid);
+            eprintln!("WARNING: Process {} has an empty affinity mask! Please assign an affinity mask. \
+            Did you disable hyperthreading without reassigning affinity masks afterwards?", pid);
             return true;
         } 
     }
-    return false;
+    false
 }

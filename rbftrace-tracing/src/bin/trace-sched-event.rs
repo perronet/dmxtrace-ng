@@ -1,5 +1,4 @@
 use structopt::StructOpt;
-use serde_yaml;
 use std::fs::{
     OpenOptions,
     remove_file,

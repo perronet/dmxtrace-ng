@@ -23,11 +23,11 @@ impl Arrival {
     pub fn new (instant: Time, cost : Cost, ss_time : Duration, ss_cnt : u64) -> Self 
     {
         Arrival {
-            instant : instant,
+            instant,
             idx : 0, // The index depends on the arrival sequence
-            cost : cost,
-            ss_time : ss_time,
-            ss_cnt : ss_cnt,
+            cost,
+            ss_time,
+            ss_cnt,
 
             t_avg_min : Time::from_ns(u64::max_value()),
             t_avg_max : Time::from_ns(u64::min_value()),
@@ -43,7 +43,8 @@ impl Ord for Arrival {
         if cmp_prio == Ordering::Equal { // Tiebreak: prioritize older observations (lower idx)
             return self.idx.cmp(&other.idx).reverse();
         }
-        return cmp_prio;
+
+        cmp_prio
     }
 }
 
