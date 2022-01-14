@@ -230,13 +230,3 @@ impl FromStr for Time {
         Ok(Time::from_ns(ns))
     }
 }
-
-/* 
-    pub fn ns_to_s(ns: Time) -> f32 {
-        (ns as f32)/((10 as f32).powi(9))
-    }
-
-    pub fn s_to_ns(s: f32) -> Time {
-        (s*((10 as f32).powi(9))) as Time
-    }
-*/
