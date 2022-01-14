@@ -1,5 +1,6 @@
-use std::{ops::{Add, AddAssign, Sub, SubAssign, Div, Rem, RemAssign}, fmt::Display, str::FromStr, num::ParseIntError};
+use std::{ops::{Add, AddAssign, Sub, SubAssign, Div, Rem, RemAssign, DivAssign, Mul, MulAssign}, fmt::Display, str::FromStr, num::ParseIntError};
 
+use duplicate::duplicate;
 use serde::{Serialize, Deserialize};
 
 
@@ -113,39 +114,90 @@ impl SubAssign for Time {
     }
 }
 
-impl Div<u64> for Time {
+#[duplicate(
+    int_type; [u8]; [u16]; [u32]; [u64];[usize]
+)]
+impl Div<int_type> for Time {
     type Output = Time;
 
-    fn div(self, rhs: u64) -> Self::Output {
-        Time::from_ns(self.ns / rhs)
-    }
-}
-
-impl Div<u32> for Time {
-    type Output = Time;
-
-    fn div(self, rhs: u32) -> Self::Output {
+    fn div(self, rhs: int_type) -> Self::Output {
         Time::from_ns(self.ns / rhs as u64)
     }
 }
 
-impl Div<f32> for Time {
+
+#[duplicate(
+    int_type; [u8]; [u16]; [u32]; [u64];[usize]
+)]
+impl DivAssign<int_type> for Time {
+    fn div_assign(&mut self, rhs: int_type) {
+        self.ns /= rhs as u64
+    }
+}
+
+#[duplicate(
+    float_type; [f32]; [f64]
+)]
+impl Div<float_type> for Time {
     type Output = Time;
 
-    fn div(self, rhs: f32) -> Self::Output {
-        let ns_f = self.ns as f32 / rhs;
+    fn div(self, rhs: float_type) -> Self::Output {
+        let ns_f = self.ns as float_type / rhs;
 
         Time::from_ns(ns_f as u64)
     }
 }
 
-impl Div<f64> for Time {
+#[duplicate(
+    float_type; [f32]; [f64]
+)]
+impl DivAssign<float_type> for Time {
+    fn div_assign(&mut self, rhs: float_type) {
+        let ns_f = (self.ns as float_type / rhs) as u64;
+        self.ns /= ns_f
+    }
+}
+
+#[duplicate(
+    int_type; [u8]; [u16]; [u32]; [u64];[usize]
+)]
+impl Mul<int_type> for Time {
+    type Output = Time;
+     
+    fn mul(self, rhs: int_type) -> Self::Output {
+        Time::from_ns(self.ns * rhs as u64)
+    }
+}
+
+#[duplicate(
+    int_type; [u8]; [u16]; [u32]; [u64];[usize]
+)]
+impl MulAssign<int_type> for Time {
+    fn mul_assign(&mut self, rhs: int_type) {
+        self.ns *= rhs as u64
+    }
+}
+
+#[duplicate(
+    float_type; [f32]; [f64]
+)]
+impl Mul<float_type> for Time {
     type Output = Time;
 
-    fn div(self, rhs: f64) -> Self::Output {
-        let ns_f = self.ns as f64 / rhs;
+    fn mul(self, rhs: float_type) -> Self::Output {
+        let ns_f = self.ns as float_type * rhs;
 
         Time::from_ns(ns_f as u64)
+    }
+}
+
+#[duplicate(
+    float_type; [f32]; [f64]
+)]
+impl MulAssign<float_type> for Time {
+    fn mul_assign(&mut self, rhs: float_type) {
+        let ns_f = (self.ns as float_type / rhs) as u64;
+        self.ns *= ns_f
     }
 }
 

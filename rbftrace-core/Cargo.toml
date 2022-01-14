@@ -9,3 +9,4 @@ edition = "2018"
 linked-list = "0.0.3"
 serde = { version = "1.0.126", features = ["derive"] }
 serde_yaml = "0.8"
+duplicate = "0.3.0"
