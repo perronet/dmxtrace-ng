@@ -75,9 +75,9 @@ impl From<u64> for Time {
     }
 }
 
-impl From<Time> for u64 {
-    fn from(val: Time) -> Self {
-        val.ns
+impl Into<u64> for Time {
+    fn into(self) -> u64 {
+        self.ns
     }
 }
 
