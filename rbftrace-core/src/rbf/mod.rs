@@ -1,7 +1,7 @@
 use std::{collections::VecDeque, cmp::Ordering};
 use serde::{Serialize, Deserialize};
 
-use crate::time::*;
+use crate::{time::*, sys_conf::{Pid, Priority}};
 
 mod sparse_map;
 use sparse_map::{SparseMap};

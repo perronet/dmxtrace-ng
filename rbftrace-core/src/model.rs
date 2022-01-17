@@ -1,6 +1,7 @@
 use crate::sys_conf::SysConf;
-use crate::time::{Pid, Time};
+use crate::time::{Time};
 use std::collections::{BTreeMap};
+use crate::sys_conf::{Pid};
 
 use serde::{Serialize, Deserialize};
 
@@ -90,7 +91,7 @@ pub struct SystemModel {
 impl SystemModel {
     pub fn new(sys_conf: SysConf) -> SystemModel {
         SystemModel{
-            sys_conf,
+            sys_conf: sys_conf,
             scalar_models: BTreeMap::new(),
             rbfs: BTreeMap::new()
         }

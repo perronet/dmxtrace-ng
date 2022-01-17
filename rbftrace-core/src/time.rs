@@ -12,9 +12,6 @@ pub struct Time {
     ns: u64
 }
 
-pub type Pid = u32;
-pub type Cpu = u32;
-pub type Priority = u32;
 // pub type Time = u64; // Integer nanoseconds
 pub type Duration = Time;
 pub type Cost = Time;

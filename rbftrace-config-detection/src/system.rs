@@ -3,7 +3,6 @@ use nc;
 use std::fs::*;
 
 use rbftrace_core::sys_conf::*;
-use rbftrace_core::time::*;
 use rbftrace_core::util::*;
 
 pub fn get_cpu_topology() -> Vec<Core> {

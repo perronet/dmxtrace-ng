@@ -3,7 +3,7 @@ use std::path::Path;
 use serde::{Serialize, Deserialize};
 use serde_yaml;
 
-use crate::time::*;
+use crate::{time::*, sys_conf::Pid};
 
 #[derive(PartialEq, Eq, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum TraceEventType {
