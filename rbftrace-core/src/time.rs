@@ -67,6 +67,12 @@ impl Time {
     pub fn to_s(&self) -> f64 {
         (self.ns as f64) / ((10_f64).powi(9))
     }
+
+    pub fn truncate(&self, resolution: Time) -> Time {
+        let new_ns = (self.ns / resolution.ns) * resolution.ns;
+
+        Time::from_ns(new_ns)
+    }
 }
 
 impl From<u64> for Time {
@@ -223,5 +229,16 @@ impl FromStr for Time {
         let ns = s.parse::<u64>()?;
 
         Ok(Time::from_ns(ns))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::time::Time;
+
+    #[test]
+    fn test_truncate() {
+        assert_eq!(Time::from_ms(1.55).truncate(Time::from_ms(1.)), Time::from_ms(1.));
+        assert_eq!(Time::from_ms(1.55).truncate(Time::from_ms(0.1)), Time::from_ms(1.5));
     }
 }
