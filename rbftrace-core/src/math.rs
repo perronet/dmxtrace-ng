@@ -1,8 +1,7 @@
-
-use std::{cmp::Ordering, iter::Cloned};
+use std::cmp::Ordering;
 
 #[derive(PartialEq, Eq, Debug, Clone, Copy)]
-pub enum ClosedInterval<T> {
+pub enum Interval<T> {
     Empty,
     NotEmpty(T, T),
     NotAnInterval
@@ -24,41 +23,41 @@ pub fn partial_min<T:PartialOrd>(a:T, b: T) -> Option<T> {
     })
 }
 
-impl <T> ClosedInterval<T> 
+impl <T> Interval<T> 
 where T: PartialEq + PartialOrd + Clone + Copy
 {
     pub fn closed(lower: T, upper: T) -> Self {
-        ClosedInterval::NotEmpty(lower, upper)
+        Interval::NotEmpty(lower, upper)
     }
 
     pub fn empty() -> Self {
-        ClosedInterval::Empty
+        Interval::Empty
     }
 
     pub fn is_empty(&self) -> bool {
         match self {
-            ClosedInterval::Empty => true,
+            Interval::Empty => true,
             _ => false
         }
     }
     
     pub fn is_interval(&self) -> bool {
         match self {
-            ClosedInterval::NotAnInterval => false,
+            Interval::NotAnInterval => false,
             _ => true 
         }
     }
 
     pub fn get_upper(&self) -> Option<T> {
         match self {
-            ClosedInterval::NotEmpty(_, b) => Some(*b),
+            Interval::NotEmpty(_, b) => Some(*b),
             _ => None
         }
     }
     
     pub fn get_lower(&self) -> Option<T> {
         match self {
-            ClosedInterval::NotEmpty(a, _) => Some(*a),
+            Interval::NotEmpty(a, _) => Some(*a),
             _ => None
         }
     }
@@ -121,17 +120,17 @@ where T: PartialEq + PartialOrd + Clone + Copy
 
 #[cfg(test)]
 mod tests {
-    use crate::math::ClosedInterval;
+    use crate::math::Interval;
 
     #[test]
     fn test_interval(){
-        assert!(ClosedInterval::<i32>::empty().is_empty());
-        assert!(ClosedInterval::<i32>::empty().is_interval());
+        assert!(Interval::<i32>::empty().is_empty());
+        assert!(Interval::<i32>::empty().is_interval());
 
-        let a = ClosedInterval::closed(1, 1);
-        let b = ClosedInterval::closed(2, 4);
-        let c = ClosedInterval::closed(3, 4);
-        let d = ClosedInterval::closed(2, 3);
+        let a = Interval::closed(1, 1);
+        let b = Interval::closed(2, 4);
+        let c = Interval::closed(3, 4);
+        let d = Interval::closed(2, 3);
 
         assert_eq!(a.intersection(&a), a);
         assert_eq!(b.intersection(&b), b);
@@ -139,13 +138,13 @@ mod tests {
         assert_eq!(d.intersection(&d), d);
 
         assert_eq!(b.intersection(&c), c);
-        assert_eq!(c.intersection(&d), ClosedInterval::closed(3, 3));
+        assert_eq!(c.intersection(&d), Interval::closed(3, 3));
         assert!(a.intersection(&b).is_empty());
 
         assert!(a.union(&a) == a);
-        assert!(a.union(&ClosedInterval::empty()) == a);
-        assert!(ClosedInterval::<i32>::empty().union(&ClosedInterval::empty()).is_empty());
-        assert!(ClosedInterval::empty().union(&a) == a);
+        assert!(a.union(&Interval::empty()) == a);
+        assert!(Interval::<i32>::empty().union(&Interval::empty()).is_empty());
+        assert!(Interval::empty().union(&a) == a);
         assert!(!a.union(&b).is_interval());
         assert_eq!(c.union(&d), b);
     }
