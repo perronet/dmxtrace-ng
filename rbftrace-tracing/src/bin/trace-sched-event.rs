@@ -12,7 +12,7 @@ use rbftrace_core::trace::{
 };
 use rbftrace_tracing::ftrace::FTraceEVG;
 use rbftrace_config_detection::system::get_pids_with_policy;
-use rbftrace_core::sys_conf::SchedPolicy;
+use rbftrace_core::sys_conf::{SchedPolicy, Pid};
 
 fn main() {
     let args = Opt::from_args();

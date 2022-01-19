@@ -3,7 +3,7 @@ use std::path::Path;
 use serde::{Serialize, Deserialize};
 use serde_yaml;
 
-use crate::time::*;
+use crate::{time::*, sys_conf::Pid};
 
 #[derive(PartialEq, Eq, Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum TraceEventType {
@@ -62,7 +62,7 @@ impl TraceEvent {
     }
     
     pub fn is_deactivation(&self) -> bool {
-        self.etype == TraceEventType::Activation
+        self.etype == TraceEventType::Deactivation
     }
     
     pub fn is_dispatch(&self) -> bool {

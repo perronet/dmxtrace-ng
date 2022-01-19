@@ -1,4 +1,4 @@
-use rbftrace_core::sys_conf::SysConf;
+use rbftrace_core::sys_conf::{SysConf, Pid};
 use rbftrace_core::model::SystemModel;
 use rbftrace_model_extraction::{
     ModelExtractor, 
@@ -203,9 +203,8 @@ mod dd {
     use rbftrace_core::model::{SystemModel, ScalarTaskModel};
     use serde::{Deserialize, Serialize};
 
-    use rbftrace_core::time::Pid;
-    use rbftrace_core::rbf::Point;
-
+    use rbftrace_core::{sys_conf::Pid, rbf::Point};
+    
     /* Note: we do not include the priority of the thread in the output.
        That information can be inferred from the system configuration. */
     #[derive(Serialize, Deserialize, Debug)]

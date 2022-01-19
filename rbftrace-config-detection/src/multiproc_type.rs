@@ -1,9 +1,9 @@
 use std::collections::HashSet;
 use std::iter::FromIterator;
 
-use rbftrace_core::sys_conf::*;
-use crate::system::*;
-use rbftrace_core::time::*;
+use rbftrace_core::sys_conf::{Pid, Cluster, MultiprocType, Cpu};
+
+use crate::system::{get_rt_pids, all_cpu_mask_vec, filter_ht_pinned_kthreads, filter_unmovable_pinned_kthreads, get_affinity};
 
 pub fn get_multiproc_type() -> MultiprocType {
     let rt_pids = filter_ht_pinned_kthreads(&get_rt_pids());

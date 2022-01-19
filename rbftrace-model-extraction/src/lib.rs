@@ -14,7 +14,7 @@ use arrival::{
     invocation_cycle::{InvocationCycle, IcHeuristic}
 };
 
-use rbftrace_core::time::{Pid};
+use rbftrace_core::sys_conf::{Pid};
 use std::collections::HashMap;
 
 #[derive(Clone, Copy)]
@@ -166,7 +166,7 @@ impl ModelExtractor {
 mod tests {
     use rbftrace_core::{
         sys_conf::{SysConf},
-        time::{Pid, Time},
+        time::{Time},
         trace::{Trace, TraceEvent}, model::{ScalarTaskModel, JobArrivalModel}
     };
 

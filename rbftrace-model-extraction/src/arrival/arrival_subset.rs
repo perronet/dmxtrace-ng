@@ -1,5 +1,5 @@
 use crate::arrival::arr::Arrival;
-use rbftrace_core::time::*;
+use rbftrace_core::{time::*, sys_conf::Pid};
 
 /// A buffer that contains only the most relevant arrivals from another arrival sequence
 /// Only buf_size arrivals are considered

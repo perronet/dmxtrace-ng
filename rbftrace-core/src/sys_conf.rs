@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
 
-use crate::time::*;
+pub type Pid = u32;
+pub type Cpu = u32;
+pub type Priority = u32;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SchedPolicy {
