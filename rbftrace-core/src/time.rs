@@ -73,6 +73,21 @@ impl Time {
 
         Time::from_ns(new_ns)
     }
+
+    pub fn round(self, resolution: Time) -> Time {
+        let halfway = resolution / 2_u32;
+
+        let mut new_ns = self.ns / resolution.ns;
+        
+        
+        if (self % resolution) >= halfway {
+            new_ns += 1;   
+        }
+
+        new_ns *= resolution.ns;
+
+        Time::from_ns(new_ns)
+    }
 }
 
 impl From<u64> for Time {
@@ -241,4 +256,26 @@ mod tests {
         assert_eq!(Time::from_ms(1.55).truncate(Time::from_ms(1.)), Time::from_ms(1.));
         assert_eq!(Time::from_ms(1.55).truncate(Time::from_ms(0.1)), Time::from_ms(1.5));
     }
+
+    #[test]
+    fn test_round(){
+        let r1 = Time::from_ms(1.0);
+        let r2 = Time::from_ms(0.1);
+
+        let t1 = Time::from_ms(1.5);
+        let t2 = Time::from_ms(1.55);
+        let t3 = Time::from_ms(1.4);
+        let t4 = Time::from_ms(1.45);
+
+        assert_eq!(t1.round(r1), Time::from_ms(2.0));
+        assert_eq!(t2.round(r1), Time::from_ms(2.0));
+        assert_eq!(t3.round(r1), Time::from_ms(1.0));
+        assert_eq!(t4.round(r1), Time::from_ms(1.0));
+        
+        assert_eq!(t1.round(r2), Time::from_ms(1.5));
+        assert_eq!(t2.round(r2), Time::from_ms(1.6));
+        assert_eq!(t3.round(r2), Time::from_ms(1.4));
+        assert_eq!(t4.round(r2), Time::from_ms(1.5));
+    }
+
 }
