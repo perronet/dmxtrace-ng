@@ -62,7 +62,7 @@ impl TraceEvent {
     }
     
     pub fn is_deactivation(&self) -> bool {
-        self.etype == TraceEventType::Activation
+        self.etype == TraceEventType::Deactivation
     }
     
     pub fn is_dispatch(&self) -> bool {
