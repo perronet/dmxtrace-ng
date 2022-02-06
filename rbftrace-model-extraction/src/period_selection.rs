@@ -3,16 +3,17 @@ use std::cmp::Ordering;
 use rbftrace_core::time::*;
 use crate::arrival::arrival_subset::PeriodRange;
 
-/// Choose between the two multiples of 10 closest to the median: pick the roundest.
+/// Choose between the two multiples of snap_ns closest to the median: pick the roundest.
 /// Tiebreak 1: pick the closest to the median.
 /// Tiebreak 2: pick the smallest of the two.
 pub fn pick_period_heuristic(feasible_periods: PeriodRange) -> Period {
     if !feasible_periods.is_empty {
+        let snap_ns = 1000;
         let t_min = feasible_periods.t_min.to_ns();
         let t_max = feasible_periods.t_max.to_ns();
         let median = ((t_min + t_max) as f64 / 2.).floor() as u64;
-        let left_dist = median % 10;
-        let right_dist = 10 - left_dist;
+        let left_dist = median % snap_ns;
+        let right_dist = snap_ns - left_dist;
         let left_mult = Time::from_ns(median - left_dist);
         let right_mult = Time::from_ns(median + right_dist);
 
