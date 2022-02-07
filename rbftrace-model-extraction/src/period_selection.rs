@@ -9,13 +9,13 @@ pub fn pick_period_heuristic(feasible_periods: PeriodRange) -> Period {
     let mean: Time = (largest - least) / 2_u32;
 
     let mag = (least.to_ns() as f64).log10().floor();
-
     let mut granularity = Time::from_ns(10_f64.powi(mag as i32) as u64);
 
     let mean_ns = mean.to_ns() as i64;
 
     while granularity >= Time::from_us(100.0) {
-        let mut first = least.round(granularity).to_ns();
+        let mut first = (least.truncate(granularity) + granularity).to_ns();
+
         // let mut first = ((least / granularity.to_ns()) + 1) * granularity.to_ns();
         
         let mut candidates = Vec::new();
@@ -34,7 +34,7 @@ pub fn pick_period_heuristic(feasible_periods: PeriodRange) -> Period {
         granularity /= 10_u32;
     }
 
-    mean.round(Time::from_ns(1))
+    mean.round(Time::from_us(1.))
 }
 
 #[cfg(test)]
