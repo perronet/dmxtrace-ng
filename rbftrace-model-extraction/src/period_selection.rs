@@ -3,57 +3,38 @@ use std::cmp::Ordering;
 use rbftrace_core::time::*;
 use crate::arrival::arrival_subset::PeriodRange;
 
-/// Choose between the two multiples of 10 closest to the median: pick the roundest.
-/// Tiebreak 1: pick the closest to the median.
-/// Tiebreak 2: pick the smallest of the two.
 pub fn pick_period_heuristic(feasible_periods: PeriodRange) -> Period {
-    if !feasible_periods.is_empty {
-        let t_min = feasible_periods.t_min.to_ns();
-        let t_max = feasible_periods.t_max.to_ns();
-        let median = ((t_min + t_max) as f64 / 2.).floor() as u64;
-        let left_dist = median % 10;
-        let right_dist = 10 - left_dist;
-        let left_mult = Time::from_ns(median - left_dist);
-        let right_mult = Time::from_ns(median + right_dist);
+    let least = feasible_periods.t_min;
+    let largest = feasible_periods.t_max;
+    let mean: Time = (largest - least) / 2_u32;
 
-        // Check if the multiples are inside the range
-        match (feasible_periods.contains(left_mult), feasible_periods.contains(right_mult)) {
-            (true, false) => { return left_mult; },
-            (false, true) => { return right_mult; },
-            (false, false) => { return Time::from_ns(median); },
-            _ => {},
+    let mag = (least.to_ns() as f64).log10().floor();
+
+    let mut granularity = Time::from_ns(10_f64.powi(mag as i32) as u64);
+
+    let mean_ns = mean.to_ns() as i64;
+
+    while granularity >= Time::from_us(100.0) {
+        let mut first = least.round(granularity).to_ns();
+        // let mut first = ((least / granularity.to_ns()) + 1) * granularity.to_ns();
+        
+        let mut candidates = Vec::new();
+
+        while first < largest.to_ns() {
+            candidates.push(first as i64);
+            first += granularity.to_ns();
         }
 
-        let roundness_left = roundness(left_mult.to_ns());
-        let roundness_right = roundness(right_mult.to_ns());
-        
-        // Pick roundest number
-        return match roundness_left.cmp(&roundness_right) {
-            Ordering::Less => right_mult,
-            Ordering::Greater => left_mult,
-            Ordering::Equal => {
-                // Tiebreak: smaller distance to median
-                match left_dist.cmp(&right_dist) {
-                    Ordering::Greater => right_mult,
-                    // Tiebreak: smaller period
-                    _ => left_mult
-                }
-            }
-        };
+        candidates.sort_by_key(|a| (*a as i64 - mean_ns).abs());
+
+        if !candidates.is_empty() {
+            return Time::from_ns(candidates[0] as u64);
+        }
+
+        granularity /= 10_u32;
     }
 
-    Time::zero()
-}
-
-fn roundness(n: u64) -> u64 {
-    let mut trailing_zeroes = 0;
-    let mut n = n;
-    while n > 0 && n%10 == 0 {
-        trailing_zeroes += 1;
-        n /= 10;
-    }
-
-    trailing_zeroes
+    mean.round(Time::from_ns(1))
 }
 
 #[cfg(test)]
@@ -83,10 +64,10 @@ mod tests {
 
     #[test]
     fn pick_period_round_bound() {
-        let interval = PeriodRange::new(Time::from_ns(1000), Time::from_ns(5000));
+        let interval = PeriodRange::new(Time::from_s(1.), Time::from_s(5.));
         let period = pick_period_heuristic(interval);
 
-        assert_eq!(period, Time::from_ns(3000));
+        assert_eq!(period, Time::from_s(2.));
     }
 
     #[test]
@@ -99,10 +80,10 @@ mod tests {
 
     #[test]
     fn pick_period_single() {
-        let interval = PeriodRange::new(Time::from_ns(1000), Time::from_ns(1000));
+        let interval = PeriodRange::new(Time::from_s(1.), Time::from_s(1.1));
         let period = pick_period_heuristic(interval);
 
-        assert_eq!(period, Time::from_ns(1000));
+        assert_eq!(period, Time::from_s(1.));
     }
 
     #[test]
