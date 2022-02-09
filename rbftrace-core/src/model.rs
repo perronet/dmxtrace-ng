@@ -5,95 +5,60 @@ use crate::sys_conf::{Pid};
 
 use serde::{Serialize, Deserialize};
 
-use crate::rbf::RbfCurve;
-
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Copy, Clone)]
-pub enum JobArrivalModel {
-    Sporadic(Time),
-    PeriodicJitter{period: Time, jitter: Time},
-    PeriodicJitterOffset{period: Time, offset: Time, jitter: Time}
-}
-
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Copy, Clone)]
-pub struct ScalarTaskModel {
-    // pub pid: Pid,
+#[derive(Clone, Copy)]
+pub struct Job {
     pub execution_time: Time,
-    pub arrival_model: JobArrivalModel
+    pub arrived_at: Time,
+    pub completed_at: Time,
+    pub preemption_time: Time,
 }
 
-impl ScalarTaskModel {
-    pub fn sporadic(execution_time: Time, mit: Time) -> ScalarTaskModel {
-        ScalarTaskModel {
-            arrival_model: JobArrivalModel::Sporadic(mit),
-            execution_time
-        }
-    }
-    
-    pub fn periodic_jitter(execution_time: Time, period: Time, jitter: Time) -> ScalarTaskModel {
-        ScalarTaskModel {
-            arrival_model: JobArrivalModel::PeriodicJitter{period, jitter},
-            execution_time
-        }
-    }
-    
-    pub fn periodic_jitter_offset(execution_time: Time, period: Time, jitter: Time, offset: Time) -> ScalarTaskModel {
-        ScalarTaskModel {
-            arrival_model: JobArrivalModel::PeriodicJitterOffset{period, offset, jitter},
-            execution_time
-        }
-    }
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Default, Clone, Copy)]
+pub struct PeriodicTask {
+    pub period: Time,
+    pub offset: Time,
+    pub jitter: Time,
+    pub wcet: Time
+}
 
-    pub fn pjo_to_pj(&self) -> Option<ScalarTaskModel> {
-        match self.arrival_model {
-            JobArrivalModel::PeriodicJitterOffset{period, jitter, ..} 
-                => Some(ScalarTaskModel::periodic_jitter(self.execution_time, period, jitter)),
-            JobArrivalModel::PeriodicJitter{period, jitter} 
-                => Some(ScalarTaskModel::periodic_jitter(self.execution_time, period, jitter)),
-            _ => None
+impl PeriodicTask {
+    pub fn new(period: Time, jitter: Time, offset: Time, wcet:Time) -> Self {
+        Self {
+            period, 
+            jitter, 
+            offset,
+            wcet
         }
     }
 
     pub fn pretty_print(&self) {
-        match self.arrival_model {
-            JobArrivalModel::PeriodicJitterOffset{period, jitter, offset} => {
-                println!("PJITTER-OFFSET");
-                println!("    P = {}", (period.to_s()));
-                println!("    J = {}", (jitter.to_s()));
-                println!("    WCET = {}", (self.execution_time.to_s()));
-                println!("    OFFSET = {}", (offset.to_s()));
-            },
-
-            JobArrivalModel::PeriodicJitter{period, jitter} => {
-                println!("PJITTER");
-                println!("    P = {}", (period.to_s()));
-                println!("    J = {}", (jitter.to_s()));
-                println!("    WCET = {}", (self.execution_time.to_s()));
-            },
-            
-            JobArrivalModel::Sporadic(mit) => {
-                println!("SPORADIC");
-                println!("    MIT = {}",  (mit.to_s()));
-                println!("    WCET = {}", (self.execution_time.to_s()));
-            },
+        if self.jitter.is_zero() {
+            println!("PJITTER");
+            println!("    P = {}", (self.period.to_s()));
+            println!("    J = {}", (self.jitter.to_s()));
+            println!("    WCET = {}", (self.wcet.to_s()));
+        }
+        else {
+            println!("PJITTER-OFFSET");
+            println!("    P = {}", (self.period.to_s()));
+            println!("    J = {}", (self.jitter.to_s()));
+            println!("    WCET = {}", (self.wcet.to_s()));
+            println!("    OFFSET = {}", (self.offset.to_s()));
         }
     }
-
-
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
-pub struct SystemModel {
-    pub sys_conf: SysConf,
-    pub scalar_models:  BTreeMap<Pid, ScalarTaskModel>,
-    pub rbfs: BTreeMap<Pid, RbfCurve>
+pub struct SystemModel<T> {
+    sys_conf: SysConf,
+    models: BTreeMap<Pid, T>
 }
 
-impl SystemModel {
-    pub fn new(sys_conf: SysConf) -> SystemModel {
-        SystemModel{
+impl<T> SystemModel<T> {
+    pub fn new(sys_conf: SysConf) -> Self {
+        Self {
             sys_conf,
-            scalar_models: BTreeMap::new(),
-            rbfs: BTreeMap::new()
+            models : BTreeMap::new(),
         }
     }
 
@@ -101,23 +66,15 @@ impl SystemModel {
         &self.sys_conf
     }
 
-    pub fn get_scalar_models(&self, pid: Pid) -> Option<&ScalarTaskModel> {
-        self.scalar_models.get(&pid)
+    pub fn get_model(&self, pid: Pid) -> Option<&T> {
+        self.models.get(&pid)
     }
 
-    pub fn set_scalar_model(&mut self, pid: Pid, model: ScalarTaskModel) {
-        self.scalar_models.insert(pid, model);
-    }
-
-    pub fn get_rbf(&self, pid: Pid) -> Option<&RbfCurve>{
-        self.rbfs.get(&pid)
-    }
-    
-    pub fn set_rbf(&mut self, pid: Pid, rbf: RbfCurve) {
-        self.rbfs.insert(pid, rbf);
+    pub fn set_task_model(&mut self, pid: Pid, model: T) {
+        self.models.insert(pid, model);
     }
 
     pub fn pids(&self) -> impl Iterator<Item=&Pid> {
-        self.scalar_models.keys()
+        self.models.keys()
     }
 }
