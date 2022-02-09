@@ -1,22 +1,39 @@
-use rbftrace_core::sys_conf::{SysConf, Pid};
-use rbftrace_core::model::SystemModel;
-use rbftrace_model_extraction::{
-    ModelExtractor, 
-    IncrementalSystemModelExtractor, 
-    ModelExtractionParameters
-};
-use structopt::StructOpt;
-use std::fs::{
-    OpenOptions,
-    remove_file,
-};
-use std::collections::BTreeMap;
-use std::path::PathBuf;
-use std::io::Write;
+use std::path::{PathBuf, Path};
 
-use rbftrace_core::time::*;
-use rbftrace_core::model::{ScalarTaskModel};
-use rbftrace_core::trace::{Trace};
+use rbftrace_core::{
+    model::{SystemModel, PeriodicTask}, 
+    sys_conf::{SysConf},
+    trace::Trace, 
+    time::{Time, Jitter}
+};
+use rbftrace_model_extraction::{
+    periodic::{PeriodicTaskExtractionParams},
+    rbf::{RBFExtractionParams}, 
+    SystemModelExtractor, 
+    composite::{CompositeExtractionParams, CompositeModelExtractor, CompositeModel},
+};
+
+use dd::WriteYAML;
+use structopt::StructOpt;
+
+fn create_dir<P: AsRef<Path>>(output_dir: P) -> Result<(), AppError> {
+    std::fs::create_dir_all(output_dir).map_err(|e| AppError::OSError(e)) 
+}
+
+fn print_periodic_models(system_model: &SystemModel<CompositeModel>) {
+    for pid in system_model.pids() {
+        println!("PID {}:", pid);
+        let model = system_model.get_model(*pid)
+                                    .map(|m| m.periodic)
+                                    .flatten();
+
+        if let Some(model) = model {
+            model.pretty_print();
+        } else {
+            println!("Not periodic");
+        }
+    }
+}
 
 fn main() {
     let args = Opt::from_args();
@@ -47,27 +64,32 @@ fn main() {
 
 fn _main(args: Opt) -> AppResult {
     let trace = Trace::from_yaml_file(&args.source_path)?;
-    let extraction_params = ModelExtractionParameters::from(&args);
+    let extraction_params = CompositeExtractionParams::from(&args);
     let mut model = SystemModel::new(SysConf::default());
-    let mut report: Vec<(u64, SystemModel)> = Vec::new();
+    // let mut report: Vec<(u64, SystemModel<CompositeModel>)> = Vec::new();
+    let mut report = dd::Report::<PeriodicTask>::new();
+
 
     if args.update_interval.is_none() && args.update_arrival.is_none() {
+        if args.report {
+            eprintln!("Option --report set for a one shot extraction. Report won't be written");
+        }
         /* ONE-SHOT */
-        let model_extractor = ModelExtractor::new(extraction_params, SysConf::default());
-        model = model_extractor.extract_model(trace);
-
+        model = SystemModelExtractor::<CompositeModelExtractor>::extract_from_trace(extraction_params, SysConf::default(), trace);
     } else {
         /* INCREMENTAL */
-        let mut model_extractor = IncrementalSystemModelExtractor::new(extraction_params, SysConf::default());
+        let mut model_extractor = SystemModelExtractor::<CompositeModelExtractor>::new(extraction_params, SysConf::default());
+
         let mut last_update_time = Time::zero();
-        let mut can_update = false;
+        let mut model_changed = false;
         let mut arrival_cnt = 1; // So that we start at 2 samples
         let update_interval = Time::from_s(args.update_interval.unwrap() as f64);
 
         for event in trace.events() {
             /* Check if the model could have changed, perform model extraction only in that case */
-            if model_extractor.push_event(event) {
-                can_update = true;
+            model_changed = model_extractor.push_event(*event);
+
+            if model_changed {
                 arrival_cnt += 1;
             }
 
@@ -78,7 +100,7 @@ fn _main(args: Opt) -> AppResult {
             
             let last_update_elapsed = event.instant - last_update_time;
 
-            if can_update && 
+            if model_changed && 
                (args.update_interval.is_some() && 
                last_update_elapsed >= update_interval ||
                 args.update_arrival.is_some() && 
@@ -88,54 +110,42 @@ fn _main(args: Opt) -> AppResult {
 
                 /* Print current models */
                 if args.print {
-                    print_models(&model.scalar_models);
+                    print_periodic_models(&model);
                     println!("----------");
                 }
                 /* Add to report */
                 if args.report {
-                    report.push((arrival_cnt, model.clone()));
+                    report.push_model(arrival_cnt as usize, &model);
                 }
+
                 last_update_time = event.instant;
-                can_update = false;
+                model_changed = false;
             }
         }
 
         /* Trace might have been shorter than update_interval or there might be events left */
-        if can_update {
+        if model_changed {
             model = model_extractor.extract_model();
             /* Add to report */
             if args.report {
-                report.push((arrival_cnt, model.clone()));
+                report.push_model(arrival_cnt as usize, &model);
             }
         }
     }
 
     /* Print final models */
     if args.print || args.output_path.is_none() {
-        print_models(&model.scalar_models);
+        print_periodic_models(&model);
     }
 
-    /* Convert to output format */
-    let output = dd::Output::from(model);
-    let output_report = dd::OutputReport::from(report);
-    
     if let Some(ref path) = args.output_path {
-        /* Write final model in output file */
-        if path.exists() {
-            remove_file(path)?;
-        }
-        let mut outputfile = OpenOptions::new()
-        .create_new(true)
-        .write(true)
-        .open(path)?;
+        create_dir(path)?;
 
-        let serialized;
         if args.report {
-            serialized = serde_yaml::to_string(&output_report)?;
+            report.write_yaml(path)?;
         } else {
-            serialized = serde_yaml::to_string(&output)?;
+            dd::Output::from(&model).write_yaml(path)?;
         }
-        write!(outputfile, "{}", serialized)?;
     }
 
     Ok(())
@@ -148,8 +158,10 @@ pub struct Opt {
     #[structopt(short = "s", long)]
     pub source_path: String,
 
-    /// Specify the output (YAML file).
+    /// Specify the output directory.
     /// If not specified, will only print human readable output.
+    /// The directory must not exist.
+    /// Matched model are written in output_path/[pid].[model].yaml
     #[structopt(short = "o", long, parse(from_os_str))]
     pub output_path: Option<PathBuf>,
 
@@ -164,7 +176,8 @@ pub struct Opt {
     pub update_arrival: Option<u64>,
 
     /// Output a file with the extracted model at each step.
-    #[structopt(short = "r", long="report", requires("output-path"))]
+    /// Reports are written in output_path/[pid].[model].report.yaml
+    #[structopt(long="report", requires("output-path"))]
     pub report: bool,
 
     /// Print extracted scalar models at each step.
@@ -173,80 +186,59 @@ pub struct Opt {
 
     // TUNABLES
     /// Jitter bound.
-    #[structopt(short = "J", long, default_value="1500000")]
+    #[structopt(short = "J", long="J_max", default_value="1500000")]
     pub jitter_bound: Jitter,
-
-    /// Arrivals buffer size.
-    #[structopt(short = "B", long, default_value="1000")]
-    pub buf_size: usize,
 
     /// Maximal busy window for RBFs.
     #[structopt(short = "w", long, default_value="1000")]
     pub window_size: usize,
+
+    #[structopt(short= "r", long="resolution", default_value="100000")]
+    pub resolution:Time,
 }
 
-impl From<&Opt> for ModelExtractionParameters {
+impl From<&Opt> for CompositeExtractionParams {
     fn from(opts: &Opt) -> Self {
-        let mut ret = ModelExtractionParameters::default();
+        let periodic = PeriodicTaskExtractionParams {
+            j_max: opts.jitter_bound,
+            resolution: opts.resolution,
+        };
 
-        ret.set_jmax(opts.jitter_bound);
-        ret.set_rbf_window_size(opts.window_size);
+        let rbf = RBFExtractionParams {
+            window_size: opts.window_size
+        };
 
-        ret
+        CompositeExtractionParams {
+            periodic,
+            rbf
+        }
     }
 }
-
 /* I/O formats and conversions */
-
 mod dd {
-    use std::collections::BTreeMap;
-    use rbftrace_core::model::{SystemModel, ScalarTaskModel};
-    use serde::{Deserialize, Serialize};
+    use std::{collections::BTreeMap, path::Path, fs::OpenOptions};
+    use rbftrace_core::{model::{SystemModel, PeriodicTask}, rbf::RbfCurve};
+    use rbftrace_model_extraction::composite::CompositeModel;
+    use serde::{Deserialize, Serialize, Serializer};
 
     use rbftrace_core::{sys_conf::Pid, rbf::Point};
+
+    use crate::AppError;
+    
+    pub trait WriteYAML {
+        fn write_yaml<P: AsRef<Path>>(&self, output_dir: P) -> Result<(), AppError>;
+    }
     
     /* Note: we do not include the priority of the thread in the output.
        That information can be inferred from the system configuration. */
     #[derive(Serialize, Deserialize, Debug)]
     pub struct Output {
         // Human-readable
-        pub scalar_models: BTreeMap<Pid, Option<ScalarTaskModel>>,
+        pub scalar_models: BTreeMap<Pid, Option<PeriodicTask>>,
         // Not human-readable
         pub curve_models: BTreeMap<Pid, OutputRbf>,
     }
-
-    #[derive(Serialize, Deserialize, Debug)]
-    pub struct OutputReport {
-        pub run_models: Vec<(u64, BTreeMap<Pid, Option<ScalarTaskModel>>)>,
-    }
-
-    #[derive(Serialize, Deserialize, Debug)]
-    pub struct OutputRbf {
-        pub rbf: Vec<Point>,
-    }
-
-    /* Only converting output */
-    mod conversion {
-        use std::convert::From;
-
-        use super::*;
-        use crate::dd;
-        use rbftrace_core::rbf::RbfCurve;
-
-        impl From<&RbfCurve> for dd::OutputRbf {
-            fn from(rbf_curve: &RbfCurve) -> Self {
-                let mut points: Vec<Point> = Vec::new();
-                for p in rbf_curve.curve.into_iter() {
-                    points.push(p);
-                }
-
-                dd::OutputRbf {
-                    rbf: points,
-                }
-            }
-        }
-    }
-
+    
     impl Output {
         pub fn new() -> Self {
             Output {
@@ -255,57 +247,148 @@ mod dd {
             }
         }
     }
-
-    impl OutputReport {
-        pub fn new() -> Self {
-            OutputReport {
-                run_models: Vec::new(),
-            }
-        }
-    }
-
-    impl From<SystemModel> for Output {
-        fn from(model: SystemModel) -> Self {
+    
+    impl From<&SystemModel<CompositeModel>> for Output {
+        fn from(model: &SystemModel<CompositeModel>) -> Self {
             let mut output = Output::new();
 
             for pid in model.pids() {
-                let scalar_model = model.get_scalar_models(*pid);
-                let m = scalar_model.and(Some(*scalar_model.unwrap()));
+                let model = model.get_model(*pid);
 
-                output.scalar_models.insert(*pid, m);
-                let output_rbf = OutputRbf::from(model.get_rbf(*pid).unwrap());
-                output.curve_models.insert(*pid, output_rbf); 
+                if let Some(model) = model {
+                    let periodic = model.periodic;
+                    output.scalar_models.insert(*pid, periodic);
+
+                    let output_rbf = OutputRbf::from(&model.rbf);
+                    output.curve_models.insert(*pid, output_rbf);
+                }
             }
 
             output
         }
     }
-
-    impl From<Vec<(u64, SystemModel)>> for OutputReport {
-        fn from(model_report: Vec<(u64, SystemModel)>) -> Self {
-            let mut output = OutputReport::new();
-
-            for (samples, model) in model_report {
-                let mut entry = (samples, BTreeMap::new());
-                for pid in model.pids() {
-                    let scalar_model = model.get_scalar_models(*pid);
-                    let m = scalar_model.and(Some(*scalar_model.unwrap()));
     
-                    entry.1.insert(*pid, m);
+    impl WriteYAML for Output {
+        fn write_yaml<P: AsRef<Path>>(&self, output_dir: P) -> Result<(), AppError> {
+            for (pid, model) in &self.scalar_models {
+                if let Some(model) = model {
+                    let filename = format!("{}.periodic.yaml", pid);
+                    let path = Path::new(output_dir.as_ref()).join(filename);
+
+                    let file = OpenOptions::new().create_new(true)
+                                                      .write(true)
+                                                      .open(path)
+                                                      .map_err(|err| AppError::OSError(err))?;
+
+                    serde_yaml::to_writer(file, &model).map_err(|e|AppError::DeserializationFailure(e))?;
                 }
-                output.run_models.push(entry);
+
+            }
+            
+            for (pid, model) in &self.curve_models {
+                let filename = format!("{}.rbf.yaml", pid);
+                let path = Path::new(output_dir.as_ref()).join(filename);
+
+                let file = OpenOptions::new().create_new(true)
+                                                  .write(true)
+                                                  .open(path)
+                                                  .map_err(|err| AppError::OSError(err))?;
+
+                serde_yaml::to_writer(file, &model).map_err(|e|AppError::DeserializationFailure(e))?;
             }
 
-            output
+            Ok(())   
+        }
+    }
+    #[derive(Serialize, Deserialize, Debug)]
+    pub struct OutputRbf {
+        pub rbf: Vec<Point>,
+    }
+    
+    impl From<&RbfCurve> for OutputRbf {
+        fn from(rbf_curve: &RbfCurve) -> Self {
+            let mut points: Vec<Point> = Vec::new();
+            for p in rbf_curve.curve.into_iter() {
+                points.push(p);
+            }
+
+            OutputRbf {
+                rbf: points,
+            }
+        }
+    }
+    
+    // serialization function for Option<Model>, returns not matched as a default value
+    fn serialize_matched_model<S, T>(model: &Option<T>,s: S) -> Result<S::Ok, S::Error> 
+    where S: Serializer, T: Serialize{
+        if model.is_none() {
+            s.serialize_str("Not matched")
+        } else {
+            model.serialize(s)
+        }
+    }
+    #[derive(Serialize, Debug)]
+    struct ReportEntry<T: Serialize > {
+        sample_count: usize,
+        #[serde(serialize_with="serialize_matched_model")]
+        model: Option<T>
+    }
+
+    pub struct Report<T: Serialize> {
+        entries: BTreeMap<Pid, Vec<ReportEntry<T>>>
+    }
+
+    impl Report<PeriodicTask> {
+        pub fn new() -> Self {
+            Self {
+                entries: BTreeMap::new()
+            }
+        }
+
+        pub fn push_model(&mut self, count: usize, model: &SystemModel<CompositeModel>) {
+            
+            for pid in model.pids() {
+                let m = model.get_model(*pid)
+                                               .map(|e| e.periodic)
+                                               .flatten();
+                let record_entry = ReportEntry{
+                    sample_count: count,
+                    model: m
+                };
+
+                let e: &mut Vec<ReportEntry<PeriodicTask>> = self.entries
+                                                             .entry(*pid)
+                                                             .or_insert_with(|| vec![]);
+                
+                e.push(record_entry);       
+            }
+        }
+    }
+
+    impl WriteYAML for Report<PeriodicTask> {
+        fn write_yaml<P: AsRef<Path>>(&self, output_dir: P) -> Result<(), AppError>{
+            for (pid, model) in &self.entries {
+                let filename = format!("{}.periodic.report.yaml", pid);
+                let path = Path::new(output_dir.as_ref()).join(filename);
+
+                let file = OpenOptions::new()
+                .create_new(true)
+                .write(true)
+                .open(path)
+                .map_err(|err| AppError::OSError(err))?;
+
+                serde_yaml::to_writer(file, &model).map_err(|e|AppError::DeserializationFailure(e))?;
+            }
+
+            Ok(())
         }
     }
 }
-
 /* Error handling */
 
 type AppResult = Result<(), AppError>;
 
-enum AppError {
+pub enum AppError {
     TraceError(rbftrace_core::trace::TraceError),
     // MatcherError(),
     OSError(std::io::Error),
@@ -327,14 +410,5 @@ impl From<std::io::Error> for AppError {
 impl From<serde_yaml::Error> for AppError {
     fn from(e: serde_yaml::Error) -> AppError {
         AppError::DeserializationFailure(e)
-    }
-}
-
-/* Support */
-
-fn print_models(models: &BTreeMap<Pid, ScalarTaskModel>) {
-    for (pid, model) in models {
-        println!("PID {}:", pid);
-        model.pretty_print();
     }
 }

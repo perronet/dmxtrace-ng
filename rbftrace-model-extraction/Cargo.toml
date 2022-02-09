@@ -10,3 +10,4 @@ rbftrace-core = { path = "../rbftrace-core" }
 serde_yaml = "0.8"
 serde = { version = "1.0.126", features = ["derive"] }
 structopt = "0.3.17"
+ringbuffer = "0.8.2"
