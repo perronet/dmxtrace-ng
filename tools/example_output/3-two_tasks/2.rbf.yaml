@@ -1,0 +1,8 @@
+---
+rbf:
+  - delta: 0
+    cost: 0
+  - delta: 1
+    cost: 10
+  - delta: 20000001
+    cost: 20

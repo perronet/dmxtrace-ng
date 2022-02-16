@@ -1,0 +1,5 @@
+---
+period: 10000000
+offset: 2000000
+jitter: 0
+wcet: 10
