@@ -16,7 +16,7 @@ pub struct CompositeExtractionParams {
     pub rbf: RBFExtractionParams,
 }
 
-#[derive(PartialEq, Eq, Clone)]
+#[derive(PartialEq, Eq, Clone, Debug)]
 pub struct CompositeModel {
     pub periodic: Option<PeriodicTask>,
     pub rbf: RbfCurve

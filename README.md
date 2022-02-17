@@ -37,7 +37,7 @@ cd tools
 The output can then be found in the newly created `models` directory. This command matched a model on the whole trace. To match incrementally and print a report of the model extracted each time, you need to use the `--report` feature:
 
 ```
-./match-model -s example_input/traces/2-periodic_one_jitter.yaml -o models_report --interval 0 --report
+./match-model -s example_input/traces/2-periodic_one_jitter.yaml -o models --interval 0 --report
 ```
 
 `--interval <update-interval>` is used in conjunction with `--report` to specify that a model should be matched each `<update-interval>` seconds. A value of zero means that a model is matched each time a new sample is added to the trace. To see all available features, run `./match-model -h`.

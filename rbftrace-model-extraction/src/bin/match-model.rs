@@ -189,7 +189,7 @@ pub struct Opt {
 
     // TUNABLES
     /// Jitter bound (in nanoseconds).
-    #[structopt(short = "J", long="J-max", default_value="1500000")]
+    #[structopt(short = "J", long="j-max", default_value="1500000")]
     pub jitter_bound: Jitter,
 
     /// Resolution of the trace (in nanoseconds). A value of 1 means nanosecond resolution.
