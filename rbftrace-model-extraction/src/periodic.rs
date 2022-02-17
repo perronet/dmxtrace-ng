@@ -73,8 +73,13 @@ impl PeriodicTaskExtractor {
 
         if event_count > 0 {
             let err = self.j_max / event_count;
-            let lower = self.average_gap - err;
             let upper = self.average_gap + err;
+            let lower: Time;
+            if err <= self.average_gap {
+                lower = self.average_gap - err;
+            } else {
+                lower = Time::zero();
+            }
             
             let obs_period_range = Interval::closed(lower, upper);
 
@@ -233,6 +238,7 @@ impl TaskModelExtractor for PeriodicTaskExtractor {
     }
 }
 
+// Reminder: These tests are using a Jmax of 1ms
 #[cfg(test)]
 mod test {
     use rbftrace_core::{time::Time, trace::{Trace, TraceEvent}, model::PeriodicTask};
