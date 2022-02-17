@@ -3,8 +3,6 @@ use std::{ops::{Add, AddAssign, Sub, SubAssign, Div, Rem, RemAssign, DivAssign, 
 use duplicate::duplicate;
 use serde::{Serialize, Deserialize};
 
-
-
 #[derive(PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Serialize, Deserialize, Debug, Default)]
 #[serde(from="u64")]
 #[serde(into="u64")]
@@ -22,7 +20,7 @@ pub type Offset = Time;
 
 impl Time {
     pub const fn zero() -> Self {
-        Time { ns: 0}
+        Time { ns: 0 }
     }
 
     pub fn is_zero(&self) -> bool {
@@ -56,7 +54,6 @@ impl Time {
         
         Time::from_ns(ns)
     }
-
     
     pub fn from_s(s: f64) -> Self {
         let ns = (s*((10_f64).powi(9))) as u64;
@@ -68,12 +65,14 @@ impl Time {
         (self.ns as f64) / ((10_f64).powi(9))
     }
 
+    /// Returns the leftmost multiple of resolution
     pub fn truncate(&self, resolution: Time) -> Time {
         let new_ns = (self.ns / resolution.ns) * resolution.ns;
 
         Time::from_ns(new_ns)
     }
 
+    /// Returns the closest multiple of resolution
     pub fn round(self, resolution: Time) -> Time {
         let halfway = resolution / 2_u32;
 

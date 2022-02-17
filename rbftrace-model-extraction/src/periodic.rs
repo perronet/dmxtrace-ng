@@ -75,10 +75,10 @@ impl PeriodicTaskExtractor {
             let err = self.j_max / event_count;
             let upper = self.average_gap + err;
             let lower: Time;
-            if err <= self.average_gap {
+            if err < self.average_gap {
                 lower = self.average_gap - err;
             } else {
-                lower = Time::zero();
+                lower = Time::from(1);
             }
             
             let obs_period_range = Interval::closed(lower, upper);
@@ -119,10 +119,33 @@ impl PeriodicTaskExtractor {
 
     fn find_period(&mut self) {
         if let Some(mut model) = self.current_model {
-            let period = self.average_gap;
+            let mut period = self.average_gap;
+            let mut period_found = false;
+            let interval_left = self.curr_period_range.unwrap().get_lower().unwrap();
+            let interval_right = self.curr_period_range.unwrap().get_upper().unwrap();
 
-            model.period = period.round(self.resolution);
+            let min_magnitude = (self.resolution.to_ns() as f64).log10() as u32;
+            let mut magnitude = 10;
+            // Try down to minimal magnitude
+            while !period_found && magnitude >= min_magnitude {
+                let granularity = Time::from(10_u64.pow(magnitude));
+                period = self.average_gap.round(granularity);
+                if interval_left <= period && period <= interval_right {
+                    period_found = true;
+                }
 
+                magnitude -= 1;
+            }
+
+            if period_found {
+                model.period = period;
+            } else {
+                // No period found in the interval with granularity >= resolution
+                // Pick a period anyway
+                model.period = self.average_gap.round(self.resolution);
+            }
+
+            assert!(model.period >= Time::from(1));
             self.current_model.replace(model);
         }
     }
