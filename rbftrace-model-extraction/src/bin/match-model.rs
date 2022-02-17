@@ -138,12 +138,15 @@ fn _main(args: Opt) -> AppResult {
         print_periodic_models(&model);
     }
 
-    if let Some(ref path) = args.output_path {
-        create_dir(path)?;
+    if let Some(mut path) = args.output_path {
+        create_dir(&path)?;
 
         if args.report {
             report.write_yaml(path)?;
         } else {
+            path.push("rbf"); // Create also rbf subdir
+            create_dir(&path)?;
+            path.pop();
             dd::Output::from(&model).write_yaml(path)?;
         }
     }
@@ -185,16 +188,17 @@ pub struct Opt {
     pub print: bool,
 
     // TUNABLES
-    /// Jitter bound.
-    #[structopt(short = "J", long="J_max", default_value="1500000")]
+    /// Jitter bound (in nanoseconds).
+    #[structopt(short = "J", long="J-max", default_value="1500000")]
     pub jitter_bound: Jitter,
+
+    /// Resolution of the trace (in nanoseconds). A value of 1 means nanosecond resolution.
+    #[structopt(short = "r", long="resolution", default_value="100000")]
+    pub resolution: Time,
 
     /// Maximal busy window for RBFs.
     #[structopt(short = "w", long, default_value="1000")]
     pub window_size: usize,
-
-    #[structopt(short= "r", long="resolution", default_value="100000")]
-    pub resolution:Time,
 }
 
 impl From<&Opt> for CompositeExtractionParams {
@@ -231,37 +235,27 @@ mod dd {
     
     /* Note: we do not include the priority of the thread in the output.
        That information can be inferred from the system configuration. */
-    #[derive(Serialize, Deserialize, Debug)]
+    /* Since there are different types of model, the serialization is handled by write_yaml */
+    #[derive(Debug)]
     pub struct Output {
-        // Human-readable
-        pub scalar_models: BTreeMap<Pid, Option<PeriodicTask>>,
-        // Not human-readable
-        pub curve_models: BTreeMap<Pid, OutputRbf>,
+        pub models: BTreeMap<Pid, CompositeModel>,
     }
     
     impl Output {
         pub fn new() -> Self {
             Output {
-                scalar_models: BTreeMap::new(),
-                curve_models: BTreeMap::new(),
+                models: BTreeMap::new(),
             }
         }
     }
     
     impl From<&SystemModel<CompositeModel>> for Output {
-        fn from(model: &SystemModel<CompositeModel>) -> Self {
+        fn from(sys_model: &SystemModel<CompositeModel>) -> Self {
             let mut output = Output::new();
 
-            for pid in model.pids() {
-                let model = model.get_model(*pid);
-
-                if let Some(model) = model {
-                    let periodic = model.periodic;
-                    output.scalar_models.insert(*pid, periodic);
-
-                    let output_rbf = OutputRbf::from(&model.rbf);
-                    output.curve_models.insert(*pid, output_rbf);
-                }
+            for pid in sys_model.pids() {
+                let model = sys_model.get_model(*pid).unwrap();
+                output.models.insert(*pid, model.clone());
             }
 
             output
@@ -270,8 +264,9 @@ mod dd {
     
     impl WriteYAML for Output {
         fn write_yaml<P: AsRef<Path>>(&self, output_dir: P) -> Result<(), AppError> {
-            for (pid, model) in &self.scalar_models {
-                if let Some(model) = model {
+            for (pid, model) in &self.models {
+                /* Periodic */
+                if let Some(periodic) = model.periodic {
                     let filename = format!("{}.periodic.yaml", pid);
                     let path = Path::new(output_dir.as_ref()).join(filename);
 
@@ -280,21 +275,20 @@ mod dd {
                                                       .open(path)
                                                       .map_err(|err| AppError::OSError(err))?;
 
-                    serde_yaml::to_writer(file, &model).map_err(|e|AppError::DeserializationFailure(e))?;
+                    serde_yaml::to_writer(file, &periodic).map_err(|e|AppError::DeserializationFailure(e))?;
                 }
 
-            }
-            
-            for (pid, model) in &self.curve_models {
+                /* RBF */
+                let rbf = OutputRbf::from(&model.rbf);
                 let filename = format!("{}.rbf.yaml", pid);
-                let path = Path::new(output_dir.as_ref()).join(filename);
+                let path = Path::new(output_dir.as_ref()).join("rbf").join(filename);
 
                 let file = OpenOptions::new().create_new(true)
                                                   .write(true)
                                                   .open(path)
                                                   .map_err(|err| AppError::OSError(err))?;
 
-                serde_yaml::to_writer(file, &model).map_err(|e|AppError::DeserializationFailure(e))?;
+                serde_yaml::to_writer(file, &rbf).map_err(|e|AppError::DeserializationFailure(e))?;
             }
 
             Ok(())   
@@ -319,14 +313,15 @@ mod dd {
     }
     
     // serialization function for Option<Model>, returns not matched as a default value
-    fn serialize_matched_model<S, T>(model: &Option<T>,s: S) -> Result<S::Ok, S::Error> 
-    where S: Serializer, T: Serialize{
+    fn serialize_matched_model<S, T>(model: &Option<T>, s: S) -> Result<S::Ok, S::Error> 
+    where S: Serializer, T: Serialize {
         if model.is_none() {
             s.serialize_str("Not matched")
         } else {
             model.serialize(s)
         }
     }
+
     #[derive(Serialize, Debug)]
     struct ReportEntry<T: Serialize > {
         sample_count: usize,
@@ -384,6 +379,7 @@ mod dd {
         }
     }
 }
+
 /* Error handling */
 
 type AppResult = Result<(), AppError>;
