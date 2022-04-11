@@ -101,8 +101,7 @@ impl PeriodicTaskExtractor {
         // update moving average
         if self.activation_history.is_full() {
             // update moving average
-            let mut oldest_diff = self.activation_history.get(0).unwrap().instant;
-            oldest_diff -= self.activation_history.get(1).unwrap().instant;
+            let oldest_diff = self.activation_history.get(1).unwrap().instant - self.activation_history.get(0).unwrap().instant;
             new_average_gap += new_diff / k;
             new_average_gap -= oldest_diff / k;
 
