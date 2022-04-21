@@ -78,7 +78,6 @@ impl Time {
 
         let mut new_ns = self.ns / resolution.ns;
         
-        
         if (self % resolution) >= halfway {
             new_ns += 1;   
         }

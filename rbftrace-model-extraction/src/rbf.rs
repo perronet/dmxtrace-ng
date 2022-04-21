@@ -10,8 +10,7 @@ pub struct RBFExtractionParams {
 
 impl Default for RBFExtractionParams {
     fn default() -> Self {
-        Self { window_size: 1000 
-        }
+        Self { window_size: 1000 }
     }
 }
 
@@ -42,7 +41,7 @@ impl TaskModelExtractor for RBFExtractor {
         maybe_job.is_some()
     }
 
-    fn extract_model(&self) -> Option<Self::Model> {
+    fn extract_model(&mut self) -> Option<Self::Model> {
         Some(self.rbf.clone())
     }
 }
