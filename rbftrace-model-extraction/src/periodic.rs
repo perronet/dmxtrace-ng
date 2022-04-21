@@ -27,7 +27,7 @@ pub struct PeriodicTaskExtractor {
     resolution: Time,
     j_max: Time,
 
-    activation_history: AllocRingBuffer<TraceEvent>,
+    activation_history: AllocRingBuffer<TraceEvent>, // Only Activation events
     still_periodic: bool,
 
     current_model: Option<PeriodicTask>,
@@ -39,19 +39,12 @@ pub struct PeriodicTaskExtractor {
     job_detector: JobExtractor,
 
     last_job: Option<Job>,
-
-    // preemption_time: Time,
-    // last_preemption_ts: Option<Time>,
 }
 
 impl PeriodicTaskExtractor {
-    fn history_size(target: usize) -> usize {
-        target.next_power_of_two()
-    }
-
     pub fn new(j_max: Time, resolution: Time) -> Self {
-        let history_size_target  = 2 * (j_max.to_ns() / resolution.to_ns()) + 1;
-        let history_size = Self::history_size(history_size_target as usize);
+        let history_size_target = (2 * (j_max.to_ns() / resolution.to_ns()) + 1 ) as usize;
+        let history_size = history_size_target.next_power_of_two();
         let activation_history = AllocRingBuffer::with_capacity(history_size);
         
         Self {
@@ -156,7 +149,6 @@ impl PeriodicTaskExtractor {
 
             let mut min_jo = last_activation_jo;
             let mut max_jo = last_activation_jo;
-            
 
             for event in self.activation_history.iter() {
                 let jo = event.instant % model.period;
@@ -239,6 +231,7 @@ impl TaskModelExtractor for PeriodicTaskExtractor {
         self.still_periodic
     }
 
+    /// Returns true if the model could have changed.
     fn push_event(&mut self, event: TraceEvent) -> bool {
         let maybe_job = self.job_detector.push_event(&event);
 
@@ -255,7 +248,8 @@ impl TaskModelExtractor for PeriodicTaskExtractor {
         maybe_job.is_some()
     }
 
-    fn extract_model(&self) -> Option<Self::Model> {
+    // The periodic extractor is completely incremental, so there is no need to manually trigger the extraction
+    fn extract_model(&mut self) -> Option<Self::Model> {
         self.current_model
     }
 }
@@ -271,23 +265,17 @@ mod test {
     pub fn periodic_fixed_exec_time(){
         let trace = Trace::from([
             TraceEvent::activation(0, Time::from_ms(5.0) ),
-
             TraceEvent::dispatch(0, Time::from_ms(5.0) ),
-
             TraceEvent::deactivation(0, Time::from_ms(7.0) ),
 
             
             TraceEvent::activation(0, Time::from_ms(15.0) ),
-
             TraceEvent::dispatch(0, Time::from_ms(15.0) ),
-
             TraceEvent::deactivation(0, Time::from_ms(17.0) ),
 
             
             TraceEvent::activation(0, Time::from_ms(25.0) ),
-
             TraceEvent::dispatch(0,Time::from_ms(25.0) ),
-
             TraceEvent::deactivation(0, Time::from_ms(27.0) )
 
         ]);

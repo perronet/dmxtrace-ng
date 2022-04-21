@@ -1,14 +1,15 @@
 use std::path::{PathBuf, Path};
 
 use rbftrace_core::{
-    model::{SystemModel, PeriodicTask}, 
+    model::{SystemModel, PeriodicTask, PeriodicSelfSuspendingTask}, 
     sys_conf::{SysConf},
     trace::Trace, 
     time::{Time, Jitter}
 };
 use rbftrace_model_extraction::{
     periodic::{PeriodicTaskExtractionParams},
-    rbf::{RBFExtractionParams}, 
+    spectral::{SpectralExtractionParams},
+    rbf::{RBFExtractionParams},
     SystemModelExtractor, 
     composite::{CompositeExtractionParams, CompositeModelExtractor, CompositeModel},
 };
@@ -66,9 +67,8 @@ fn _main(args: Opt) -> AppResult {
     let trace = Trace::from_yaml_file(&args.source_path)?;
     let extraction_params = CompositeExtractionParams::from(&args);
     let mut model = SystemModel::new(SysConf::default());
-    // let mut report: Vec<(u64, SystemModel<CompositeModel>)> = Vec::new();
-    let mut report = dd::Report::<PeriodicTask>::new();
-
+    let mut report_periodic = dd::Report::<PeriodicTask>::new();
+    let mut report_periodic_ss = dd::Report::<PeriodicSelfSuspendingTask>::new();
 
     if args.update_interval.is_none() && args.update_arrival.is_none() {
         if args.report {
@@ -115,7 +115,8 @@ fn _main(args: Opt) -> AppResult {
                 }
                 /* Add to report */
                 if args.report {
-                    report.push_model(arrival_cnt as usize, &model);
+                    report_periodic.push_model(arrival_cnt as usize, &model);
+                    report_periodic_ss.push_model(arrival_cnt as usize, &model);
                 }
 
                 last_update_time = event.instant;
@@ -128,7 +129,8 @@ fn _main(args: Opt) -> AppResult {
             model = model_extractor.extract_model();
             /* Add to report */
             if args.report {
-                report.push_model(arrival_cnt as usize, &model);
+                report_periodic.push_model(arrival_cnt as usize, &model);
+                report_periodic_ss.push_model(arrival_cnt as usize, &model);
             }
         }
     }
@@ -142,7 +144,8 @@ fn _main(args: Opt) -> AppResult {
         create_dir(&path)?;
 
         if args.report {
-            report.write_yaml(path)?;
+            report_periodic.write_yaml(&path)?;
+            report_periodic_ss.write_yaml(&path)?;
         } else {
             path.push("rbf"); // Create also rbf subdir
             create_dir(&path)?;
@@ -196,9 +199,17 @@ pub struct Opt {
     #[structopt(short = "r", long="resolution", default_value="100000")]
     pub resolution: Time,
 
-    /// Maximal busy window for RBFs.
+    /// Maximal arrival window for RBFs and spectral extractor.
     #[structopt(short = "w", long, default_value="1000")]
     pub window_size: usize,
+
+    /// Maximal amount of signal samples for the spectral extractor.
+    #[structopt(short = "l", long, default_value="1000000")]
+    pub signal_size: usize,
+
+    /// Cutoff spectral density for period picking in the spectral extractor.
+    #[structopt(short = "f", long, default_value="0.5")]
+    pub fft_cutoff: f32,
 }
 
 impl From<&Opt> for CompositeExtractionParams {
@@ -208,12 +219,19 @@ impl From<&Opt> for CompositeExtractionParams {
             resolution: opts.resolution,
         };
 
+        let spectral = SpectralExtractionParams {
+            max_signal_len: opts.signal_size,
+            window_size: opts.window_size,
+            fft_filter_cutoff: opts.fft_cutoff,
+        };
+
         let rbf = RBFExtractionParams {
             window_size: opts.window_size
         };
 
         CompositeExtractionParams {
             periodic,
+            spectral,
             rbf
         }
     }
@@ -221,7 +239,7 @@ impl From<&Opt> for CompositeExtractionParams {
 /* I/O formats and conversions */
 mod dd {
     use std::{collections::BTreeMap, path::Path, fs::OpenOptions};
-    use rbftrace_core::{model::{SystemModel, PeriodicTask}, rbf::RbfCurve};
+    use rbftrace_core::{model::{SystemModel, PeriodicTask, PeriodicSelfSuspendingTask}, rbf::RbfCurve};
     use rbftrace_model_extraction::composite::CompositeModel;
     use serde::{Deserialize, Serialize, Serializer};
 
@@ -265,8 +283,12 @@ mod dd {
     impl WriteYAML for Output {
         fn write_yaml<P: AsRef<Path>>(&self, output_dir: P) -> Result<(), AppError> {
             for (pid, model) in &self.models {
+
+                /* Can't have both periodic and periodic with self-suspensions */
+                assert!(!(model.periodic.is_some() && model.periodic_ss.is_some()));
+
                 /* Periodic */
-                if let Some(periodic) = model.periodic {
+                if let Some(periodic) = &model.periodic {
                     let filename = format!("{}.periodic.yaml", pid);
                     let path = Path::new(output_dir.as_ref()).join(filename);
 
@@ -276,6 +298,19 @@ mod dd {
                                                       .map_err(|err| AppError::OSError(err))?;
 
                     serde_yaml::to_writer(file, &periodic).map_err(|e|AppError::DeserializationFailure(e))?;
+                }
+
+                /* Spectral */
+                if let Some(periodic_ss) = &model.periodic_ss {
+                    let filename = format!("{}.periodic_ss.yaml", pid);
+                    let path = Path::new(output_dir.as_ref()).join(filename);
+
+                    let file = OpenOptions::new().create_new(true)
+                                                      .write(true)
+                                                      .open(path)
+                                                      .map_err(|err| AppError::OSError(err))?;
+
+                    serde_yaml::to_writer(file, &periodic_ss).map_err(|e|AppError::DeserializationFailure(e))?;
                 }
 
                 /* RBF */
@@ -294,6 +329,7 @@ mod dd {
             Ok(())   
         }
     }
+
     #[derive(Serialize, Deserialize, Debug)]
     pub struct OutputRbf {
         pub rbf: Vec<Point>,
@@ -323,7 +359,7 @@ mod dd {
     }
 
     #[derive(Serialize, Debug)]
-    struct ReportEntry<T: Serialize > {
+    struct ReportEntry<T: Serialize> {
         sample_count: usize,
         #[serde(serialize_with="serialize_matched_model")]
         model: Option<T>
@@ -341,11 +377,8 @@ mod dd {
         }
 
         pub fn push_model(&mut self, count: usize, model: &SystemModel<CompositeModel>) {
-            
             for pid in model.pids() {
-                let m = model.get_model(*pid)
-                                               .map(|e| e.periodic)
-                                               .flatten();
+                let m = model.get_model(*pid).map(|e| e.periodic).flatten();
                 let record_entry = ReportEntry{
                     sample_count: count,
                     model: m
@@ -364,6 +397,49 @@ mod dd {
         fn write_yaml<P: AsRef<Path>>(&self, output_dir: P) -> Result<(), AppError>{
             for (pid, model) in &self.entries {
                 let filename = format!("{}.periodic.report.yaml", pid);
+                let path = Path::new(output_dir.as_ref()).join(filename);
+
+                let file = OpenOptions::new()
+                .create_new(true)
+                .write(true)
+                .open(path)
+                .map_err(|err| AppError::OSError(err))?;
+
+                serde_yaml::to_writer(file, &model).map_err(|e|AppError::DeserializationFailure(e))?;
+            }
+
+            Ok(())
+        }
+    }
+
+    impl Report<PeriodicSelfSuspendingTask> {
+        pub fn new() -> Self {
+            Self {
+                entries: BTreeMap::new()
+            }
+        }
+
+        pub fn push_model(&mut self, count: usize, model: &SystemModel<CompositeModel>) {
+            for pid in model.pids() {
+                let m = model.get_model(*pid).map(|e| e.periodic_ss.clone()).flatten();
+                let record_entry = ReportEntry{
+                    sample_count: count,
+                    model: m
+                };
+
+                let e: &mut Vec<ReportEntry<PeriodicSelfSuspendingTask>> = self.entries
+                                                             .entry(*pid)
+                                                             .or_insert_with(|| vec![]);
+                
+                e.push(record_entry);       
+            }
+        }
+    }
+
+    impl WriteYAML for Report<PeriodicSelfSuspendingTask> {
+        fn write_yaml<P: AsRef<Path>>(&self, output_dir: P) -> Result<(), AppError>{
+            for (pid, model) in &self.entries {
+                let filename = format!("{}.periodic_ss.report.yaml", pid);
                 let path = Path::new(output_dir.as_ref()).join(filename);
 
                 let file = OpenOptions::new()

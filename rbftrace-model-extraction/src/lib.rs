@@ -48,6 +48,7 @@ use rbftrace_core::sys_conf::{SysConf, Pid};
 use std::collections::HashMap;
 
 pub mod periodic;
+pub mod spectral;
 pub mod rbf;
 pub mod job;
 pub mod composite;
@@ -76,7 +77,7 @@ pub trait TaskModelExtractor {
     fn push_event(&mut self, event: TraceEvent) -> bool;
 
     /// Extract a model based on the current extractor state if matching.
-    fn extract_model(&self) -> Option<Self::Model>;
+    fn extract_model(&mut self) -> Option<Self::Model>;
 
     /// Call `push_trace` and check if the model is still matching
     fn match_trace(&mut self, trace: &Trace) -> bool {
@@ -123,11 +124,10 @@ impl<T: TaskModelExtractor> SystemModelExtractor<T> {
     }
 
     /// Extract a system model from the current extraction state
-    pub fn extract_model(&self) -> SystemModel<T::Model> {
+    pub fn extract_model(&mut self) -> SystemModel<T::Model> {
         let mut system_model = SystemModel::new(self.sys_conf.clone());
 
-        for (pid, extractor) in self.extractors.iter() {
-            // m.set_rbf(*pid, extractor.extract_rbf());
+        for (pid, extractor) in self.extractors.iter_mut() {
             if let Some(task_model) = extractor.extract_model() {
                 system_model.set_task_model(*pid, task_model);
             }

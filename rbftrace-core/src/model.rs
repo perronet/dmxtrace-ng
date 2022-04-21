@@ -21,8 +21,21 @@ pub struct PeriodicTask {
     pub wcet: Time
 }
 
+/* It is possible to employ both the dynamic self-suspension model
+and the segmented self-suspension model simultaneously in one task set. The hybrid
+self-suspension models can be adopted with different trade-offs between flexibility and accuracy. */
+
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Default, Clone)]
+pub struct PeriodicSelfSuspendingTask {
+    pub period: Time,
+    pub total_wcet: Time,
+    pub total_wcss: Time,
+    pub wcet: Vec<Time>, // m
+    pub ss: Vec<Time>    // m-1
+}
+
 impl PeriodicTask {
-    pub fn new(period: Time, jitter: Time, offset: Time, wcet:Time) -> Self {
+    pub fn new(period: Time, jitter: Time, offset: Time, wcet: Time) -> Self {
         Self {
             period, 
             jitter, 
@@ -45,6 +58,12 @@ impl PeriodicTask {
             println!("    WCET = {}", (self.wcet.to_s()));
             println!("    OFFSET = {}", (self.offset.to_s()));
         }
+    }
+}
+
+impl PeriodicSelfSuspendingTask {
+    pub fn computation_segments(&self) -> usize {
+        self.wcet.len()
     }
 }
 
