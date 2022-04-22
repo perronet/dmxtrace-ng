@@ -87,9 +87,7 @@ impl PeriodicTaskExtractor {
 
     fn push_activation_and_update_average_gap(&mut self, event: TraceEvent) {
         let new_diff = event.instant - self.activation_history.back().unwrap().instant;
-
         let mut k = self.activation_history.len() - 1;
-
         let mut new_average_gap = self.average_gap;
         // update moving average
         if self.activation_history.is_full() {
@@ -103,6 +101,10 @@ impl PeriodicTaskExtractor {
             k += 1;
             new_average_gap += new_diff / k;
             new_average_gap -= self.average_gap / k;
+        }
+
+        if new_diff < self.resolution {
+            panic!("Interarrival time ({} ns) is smaller than the resolution ({} ns)", new_diff, self.resolution);
         }
 
         self.activation_history.push(event);
@@ -137,6 +139,7 @@ impl PeriodicTaskExtractor {
                 model.period = self.average_gap.round(self.resolution);
             }
 
+            assert!(self.average_gap >= self.resolution);
             assert!(model.period >= Time::from(1));
             self.current_model.replace(model);
         }
