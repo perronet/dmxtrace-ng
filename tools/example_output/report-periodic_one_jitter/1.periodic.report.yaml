@@ -3,14 +3,14 @@
   model: Not matched
 - sample_count: 3
   model:
-    period: 1000200000
+    period: 1000000000
     offset: 10600000
-    jitter: 59722
+    jitter: 246773
     wcet: 100000000
 - sample_count: 4
   model:
-    period: 999900000
-    offset: 10600000
+    period: 1000000000
+    offset: 10500000
     jitter: 346773
     wcet: 100000000
 - sample_count: 5
@@ -27,9 +27,9 @@
     wcet: 100000000
 - sample_count: 7
   model:
-    period: 999900000
-    offset: 10500000
-    jitter: 540896
+    period: 1000000000
+    offset: 10000000
+    jitter: 846773
     wcet: 100000000
 - sample_count: 8
   model:

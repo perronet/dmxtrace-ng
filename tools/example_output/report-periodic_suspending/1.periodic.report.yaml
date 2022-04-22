@@ -1,0 +1,305 @@
+---
+- sample_count: 2
+  model: Not matched
+- sample_count: 3
+  model:
+    period: 70000000
+    offset: 32400000
+    jitter: 1008238
+    wcet: 35944368
+- sample_count: 4
+  model: Not matched
+- sample_count: 5
+  model: Not matched
+- sample_count: 6
+  model: Not matched
+- sample_count: 7
+  model: Not matched
+- sample_count: 8
+  model: Not matched
+- sample_count: 9
+  model: Not matched
+- sample_count: 10
+  model: Not matched
+- sample_count: 11
+  model: Not matched
+- sample_count: 12
+  model: Not matched
+- sample_count: 13
+  model: Not matched
+- sample_count: 14
+  model: Not matched
+- sample_count: 15
+  model: Not matched
+- sample_count: 16
+  model: Not matched
+- sample_count: 17
+  model: Not matched
+- sample_count: 18
+  model: Not matched
+- sample_count: 19
+  model: Not matched
+- sample_count: 20
+  model: Not matched
+- sample_count: 21
+  model: Not matched
+- sample_count: 22
+  model: Not matched
+- sample_count: 23
+  model: Not matched
+- sample_count: 24
+  model: Not matched
+- sample_count: 25
+  model: Not matched
+- sample_count: 26
+  model: Not matched
+- sample_count: 27
+  model: Not matched
+- sample_count: 28
+  model: Not matched
+- sample_count: 29
+  model: Not matched
+- sample_count: 30
+  model: Not matched
+- sample_count: 31
+  model: Not matched
+- sample_count: 32
+  model: Not matched
+- sample_count: 33
+  model: Not matched
+- sample_count: 34
+  model: Not matched
+- sample_count: 35
+  model: Not matched
+- sample_count: 36
+  model: Not matched
+- sample_count: 37
+  model: Not matched
+- sample_count: 38
+  model: Not matched
+- sample_count: 39
+  model: Not matched
+- sample_count: 40
+  model: Not matched
+- sample_count: 41
+  model: Not matched
+- sample_count: 42
+  model: Not matched
+- sample_count: 43
+  model: Not matched
+- sample_count: 44
+  model: Not matched
+- sample_count: 45
+  model: Not matched
+- sample_count: 46
+  model: Not matched
+- sample_count: 47
+  model: Not matched
+- sample_count: 48
+  model: Not matched
+- sample_count: 49
+  model: Not matched
+- sample_count: 50
+  model: Not matched
+- sample_count: 51
+  model: Not matched
+- sample_count: 52
+  model: Not matched
+- sample_count: 53
+  model: Not matched
+- sample_count: 54
+  model: Not matched
+- sample_count: 55
+  model: Not matched
+- sample_count: 56
+  model: Not matched
+- sample_count: 57
+  model: Not matched
+- sample_count: 58
+  model: Not matched
+- sample_count: 59
+  model: Not matched
+- sample_count: 60
+  model: Not matched
+- sample_count: 61
+  model: Not matched
+- sample_count: 62
+  model: Not matched
+- sample_count: 63
+  model: Not matched
+- sample_count: 64
+  model: Not matched
+- sample_count: 65
+  model: Not matched
+- sample_count: 66
+  model: Not matched
+- sample_count: 67
+  model: Not matched
+- sample_count: 68
+  model: Not matched
+- sample_count: 69
+  model: Not matched
+- sample_count: 70
+  model: Not matched
+- sample_count: 71
+  model: Not matched
+- sample_count: 72
+  model: Not matched
+- sample_count: 73
+  model: Not matched
+- sample_count: 74
+  model: Not matched
+- sample_count: 75
+  model: Not matched
+- sample_count: 76
+  model: Not matched
+- sample_count: 77
+  model: Not matched
+- sample_count: 78
+  model: Not matched
+- sample_count: 79
+  model: Not matched
+- sample_count: 80
+  model: Not matched
+- sample_count: 81
+  model: Not matched
+- sample_count: 82
+  model: Not matched
+- sample_count: 83
+  model: Not matched
+- sample_count: 84
+  model: Not matched
+- sample_count: 85
+  model: Not matched
+- sample_count: 86
+  model: Not matched
+- sample_count: 87
+  model: Not matched
+- sample_count: 88
+  model: Not matched
+- sample_count: 89
+  model: Not matched
+- sample_count: 90
+  model: Not matched
+- sample_count: 91
+  model: Not matched
+- sample_count: 92
+  model: Not matched
+- sample_count: 93
+  model: Not matched
+- sample_count: 94
+  model: Not matched
+- sample_count: 95
+  model: Not matched
+- sample_count: 96
+  model: Not matched
+- sample_count: 97
+  model: Not matched
+- sample_count: 98
+  model: Not matched
+- sample_count: 99
+  model: Not matched
+- sample_count: 100
+  model: Not matched
+- sample_count: 101
+  model: Not matched
+- sample_count: 102
+  model: Not matched
+- sample_count: 103
+  model: Not matched
+- sample_count: 104
+  model: Not matched
+- sample_count: 105
+  model: Not matched
+- sample_count: 106
+  model: Not matched
+- sample_count: 107
+  model: Not matched
+- sample_count: 108
+  model: Not matched
+- sample_count: 109
+  model: Not matched
+- sample_count: 110
+  model: Not matched
+- sample_count: 111
+  model: Not matched
+- sample_count: 112
+  model: Not matched
+- sample_count: 113
+  model: Not matched
+- sample_count: 114
+  model: Not matched
+- sample_count: 115
+  model: Not matched
+- sample_count: 116
+  model: Not matched
+- sample_count: 117
+  model: Not matched
+- sample_count: 118
+  model: Not matched
+- sample_count: 119
+  model: Not matched
+- sample_count: 120
+  model: Not matched
+- sample_count: 121
+  model: Not matched
+- sample_count: 122
+  model: Not matched
+- sample_count: 123
+  model: Not matched
+- sample_count: 124
+  model: Not matched
+- sample_count: 125
+  model: Not matched
+- sample_count: 126
+  model: Not matched
+- sample_count: 127
+  model: Not matched
+- sample_count: 128
+  model: Not matched
+- sample_count: 129
+  model: Not matched
+- sample_count: 130
+  model: Not matched
+- sample_count: 131
+  model: Not matched
+- sample_count: 132
+  model: Not matched
+- sample_count: 133
+  model: Not matched
+- sample_count: 134
+  model: Not matched
+- sample_count: 135
+  model: Not matched
+- sample_count: 136
+  model: Not matched
+- sample_count: 137
+  model: Not matched
+- sample_count: 138
+  model: Not matched
+- sample_count: 139
+  model: Not matched
+- sample_count: 140
+  model: Not matched
+- sample_count: 141
+  model: Not matched
+- sample_count: 142
+  model: Not matched
+- sample_count: 143
+  model: Not matched
+- sample_count: 144
+  model: Not matched
+- sample_count: 145
+  model: Not matched
+- sample_count: 146
+  model: Not matched
+- sample_count: 147
+  model: Not matched
+- sample_count: 148
+  model: Not matched
+- sample_count: 149
+  model: Not matched
+- sample_count: 150
+  model: Not matched
+- sample_count: 151
+  model: Not matched
