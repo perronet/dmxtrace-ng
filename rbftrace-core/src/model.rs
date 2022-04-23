@@ -5,7 +5,7 @@ use crate::sys_conf::{Pid};
 
 use serde::{Serialize, Deserialize};
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Default, Debug)]
 pub struct Job {
     pub execution_time: Time,
     pub arrived_at: Time,
@@ -31,7 +31,8 @@ pub struct PeriodicSelfSuspendingTask {
     pub total_wcet: Time,
     pub total_wcss: Time,
     pub wcet: Vec<Time>, // m
-    pub ss: Vec<Time>    // m-1
+    pub ss: Vec<Time>,   // m-1
+    pub segmented: bool
 }
 
 impl PeriodicTask {

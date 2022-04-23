@@ -86,6 +86,15 @@ impl Time {
 
         Time::from_ns(new_ns)
     }
+
+    /// Returns the closest multiple of the greatest possible resolution
+    pub fn round_to_greatest_resolution(self) -> Time {
+        let ns = self.ns as f64;
+        let magnitude = ns.log10().floor() as i32;
+        let mantissa = ns / ((10_f64).powi(magnitude));
+
+        Time::from_ns((mantissa.round()*((10_f64).powi(magnitude))) as u64)
+    }
 }
 
 impl From<u64> for Time {

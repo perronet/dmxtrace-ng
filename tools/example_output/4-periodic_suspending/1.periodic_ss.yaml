@@ -1,6 +1,12 @@
 ---
-period: 1004000000
-total_wcet: 0
-total_wcss: 0
-wcet: []
-ss: []
+period: 1000000000
+total_wcet: 137993437
+total_wcss: 129698403
+wcet:
+  - 97993437
+  - 20000000
+  - 20000000
+ss:
+  - 69685648
+  - 97094207
+segmented: true

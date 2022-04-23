@@ -5,1037 +5,1921 @@
   model: Not matched
 - sample_count: 4
   model:
-    period: 76000000
-    total_wcet: 0
+    period: 80000000
+    total_wcet: 35944368
     total_wcss: 0
-    wcet: []
+    wcet:
+      - 35944368
     ss: []
+    segmented: true
 - sample_count: 5
   model:
-    period: 993000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 75944368
+    total_wcss: 96649827
+    wcet:
+      - 35944368
+      - 20000000
+      - 20000000
+    ss:
+      - 33108585
+      - 63541242
+    segmented: true
 - sample_count: 6
   model:
-    period: 1133000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 75944368
+    total_wcss: 96649827
+    wcet:
+      - 35944368
+      - 20000000
+      - 20000000
+    ss:
+      - 33108585
+      - 63541242
+    segmented: true
 - sample_count: 7
   model:
-    period: 1225000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 75944368
+    total_wcss: 96649827
+    wcet:
+      - 35944368
+      - 20000000
+      - 20000000
+    ss:
+      - 33108585
+      - 63541242
+    segmented: true
 - sample_count: 8
   model:
-    period: 1002000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 9
   model:
-    period: 1036000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 10
   model:
-    period: 1078000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 11
   model:
-    period: 1001000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 12
   model:
-    period: 1033000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 13
   model:
-    period: 1055000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 14
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 15
   model:
-    period: 1026000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 16
   model:
-    period: 1048000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 17
   model:
-    period: 1007000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 18
   model:
-    period: 1022000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 19
   model:
-    period: 1039000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 20
   model:
-    period: 999000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 21
   model:
-    period: 1020000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 22
   model:
-    period: 1035000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 126280357
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 54781509
+      - 71498848
+    segmented: true
 - sample_count: 23
   model:
-    period: 995000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 127878636
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 59195193
+      - 71498848
+    segmented: true
 - sample_count: 24
   model:
-    period: 1019000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 127878636
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 59195193
+      - 71498848
+    segmented: true
 - sample_count: 25
   model:
-    period: 1031000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 125842024
+    total_wcss: 127878636
+    wcet:
+      - 85842024
+      - 20000000
+      - 20000000
+    ss:
+      - 59195193
+      - 71498848
+    segmented: true
 - sample_count: 26
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 136996616
+    total_wcss: 129205480
+    wcet:
+      - 96996616
+      - 20000000
+      - 20000000
+    ss:
+      - 66466228
+      - 71498848
+    segmented: true
 - sample_count: 27
   model:
-    period: 1007000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 136996616
+    total_wcss: 129205480
+    wcet:
+      - 96996616
+      - 20000000
+      - 20000000
+    ss:
+      - 66466228
+      - 71498848
+    segmented: true
 - sample_count: 28
   model:
-    period: 1020000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 136996616
+    total_wcss: 129205480
+    wcet:
+      - 96996616
+      - 20000000
+      - 20000000
+    ss:
+      - 66466228
+      - 71498848
+    segmented: true
 - sample_count: 29
   model:
-    period: 998000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 136996616
+    total_wcss: 129205480
+    wcet:
+      - 96996616
+      - 20000000
+      - 20000000
+    ss:
+      - 66466228
+      - 87930998
+    segmented: true
 - sample_count: 30
   model:
-    period: 1016000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 136996616
+    total_wcss: 129205480
+    wcet:
+      - 96996616
+      - 20000000
+      - 20000000
+    ss:
+      - 66466228
+      - 87930998
+    segmented: true
 - sample_count: 31
   model:
-    period: 1025000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 136996616
+    total_wcss: 129205480
+    wcet:
+      - 96996616
+      - 20000000
+      - 20000000
+    ss:
+      - 66466228
+      - 87930998
+    segmented: true
 - sample_count: 32
   model:
-    period: 1002000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 66466228
+      - 87930998
+    segmented: true
 - sample_count: 33
   model:
-    period: 1010000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 66466228
+      - 87930998
+    segmented: true
 - sample_count: 34
   model:
-    period: 1017000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 66466228
+      - 87930998
+    segmented: true
 - sample_count: 35
   model:
-    period: 1005000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 36
   model:
-    period: 1019000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 37
   model:
-    period: 1025000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 38
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 39
   model:
-    period: 1007000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 40
   model:
-    period: 1014000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 41
   model:
-    period: 998000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 42
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 43
   model:
-    period: 1009000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 44
   model:
-    period: 1002000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 45
   model:
-    period: 1006000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 46
   model:
-    period: 1012000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 47
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 48
   model:
-    period: 1011000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 49
   model:
-    period: 1015000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 50
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 51
   model:
-    period: 1013000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 52
   model:
-    period: 1019000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 53
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 54
   model:
-    period: 1007000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 55
   model:
-    period: 1014000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 56
   model:
-    period: 999000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 57
   model:
-    period: 1005000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 58
   model:
-    period: 1010000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 59
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 60
   model:
-    period: 1007000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 61
   model:
-    period: 1013000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 62
   model:
-    period: 999000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 63
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 64
   model:
-    period: 1007000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 65
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 66
   model:
-    period: 1006000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 67
   model:
-    period: 1009000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 68
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 69
   model:
-    period: 1006000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 70
   model:
-    period: 1008000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 71
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 72
   model:
-    period: 1007000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 73
   model:
-    period: 1009000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 67151371
+      - 87930998
+    segmented: true
 - sample_count: 74
   model:
-    period: 1001000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 75
   model:
-    period: 1005000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 76
   model:
-    period: 1008000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 77
   model:
-    period: 1002000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 78
   model:
-    period: 1007000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 79
   model:
-    period: 1010000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 80
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 81
   model:
-    period: 1008000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 82
   model:
-    period: 1011000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 83
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 84
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 85
   model:
-    period: 1006000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 86
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 87
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 88
   model:
-    period: 1008000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 87930998
+    segmented: true
 - sample_count: 89
   model:
-    period: 999000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 90
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 91
   model:
-    period: 1006000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 92
   model:
-    period: 1001000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 93
   model:
-    period: 1006000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 94
   model:
-    period: 1009000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 95
   model:
-    period: 1001000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 96
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 97
   model:
-    period: 1005000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 98
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 99
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 100
   model:
-    period: 1006000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 101
   model:
-    period: 1001000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 102
   model:
-    period: 1002000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 103
   model:
-    period: 1005000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 104
   model:
-    period: 999000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 105
   model:
-    period: 1002000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 106
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 107
   model:
-    period: 1001000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 108
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 109
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 110
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 111
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 112
   model:
-    period: 1006000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 113
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 114
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 115
   model:
-    period: 1005000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 116
   model:
-    period: 1001000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 117
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 118
   model:
-    period: 1005000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 119
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 120
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 121
   model:
-    period: 1005000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69288614
+      - 97094207
+    segmented: true
 - sample_count: 122
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 123
   model:
-    period: 1002000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 124
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 125
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 126
   model:
-    period: 1001000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 127
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 128
   model:
-    period: 1001000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 129
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 130
   model:
-    period: 1005000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 131
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 132
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 133
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 134
   model:
-    period: 1001000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 135
   model:
-    period: 1002000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 136
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 137
   model:
-    period: 999000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 138
   model:
-    period: 1002000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 139
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 140
   model:
-    period: 999000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 141
   model:
-    period: 1001000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 142
   model:
-    period: 1003000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 143
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 144
   model:
-    period: 1002000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 145
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 146
   model:
-    period: 1001000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 147
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 148
   model:
-    period: 1006000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 149
   model:
     period: 1000000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 150
   model:
-    period: 1002000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
 - sample_count: 151
   model:
-    period: 1004000000
-    total_wcet: 0
-    total_wcss: 0
-    wcet: []
-    ss: []
+    period: 1000000000
+    total_wcet: 137993437
+    total_wcss: 129698403
+    wcet:
+      - 97993437
+      - 20000000
+      - 20000000
+    ss:
+      - 69685648
+      - 97094207
+    segmented: true
