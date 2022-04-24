@@ -82,20 +82,20 @@ impl SpectralExtractor {
 
     fn detect_suspensions(&mut self, period: Period) -> PeriodicSelfSuspendingTask {
         let mut model = PeriodicSelfSuspendingTask::default();
-        let mut jobs_ss: Vec<SelfSuspendingJob> = Vec::new();
         let mut curr_job_ss = SelfSuspendingJob::default();
         let mut prev_job = &Job::default();
-        let mut next_arrival_ts = Time::zero();
         let mut n_exec_segments = 0;
+        let first_arrival_ts = self.job_history.get(0).unwrap().arrived_at;
+        let mut next_arrival_ts = first_arrival_ts;
         model.segmented = true;
         model.period = period;
 
         for job in self.job_history.iter() {
             assert!(job.arrived_at > prev_job.completed_at);
-            if job.arrived_at > next_arrival_ts {
+            if job.arrived_at >= next_arrival_ts {
 
                 // Finalize previous self-suspending job
-                if next_arrival_ts > Time::zero() {
+                if next_arrival_ts > first_arrival_ts {
                     // Check for segmented model (i.e. n_exec_segments is always the same for each job)
                     assert!(curr_job_ss.suspensions.len() == curr_job_ss.executions.len()-1);
                     if n_exec_segments > 0 && curr_job_ss.executions.len() != n_exec_segments {
@@ -383,9 +383,9 @@ mod test {
     #[test]
     fn periodic_no_ss_jitter() {
         let trace = Trace::from([
-            TraceEvent::activation(0, Time::from_ms(5.5)),
-            TraceEvent::dispatch(0, Time::from_ms(5.5)),
-            TraceEvent::deactivation(0, Time::from_ms(7.5)),
+            TraceEvent::activation(0, Time::from_ms(5.0)),
+            TraceEvent::dispatch(0, Time::from_ms(5.0)),
+            TraceEvent::deactivation(0, Time::from_ms(7.0)),
             
             TraceEvent::activation(0, Time::from_ms(15.3)),
             TraceEvent::dispatch(0, Time::from_ms(15.3)),
@@ -449,14 +449,14 @@ mod test {
     #[test]
     fn periodic_ss() {
         let trace = Trace::from([
-            TraceEvent::activation(0, Time::from_s(5.5)),
-            TraceEvent::dispatch(0, Time::from_s(5.5)),
-            TraceEvent::deactivation(0, Time::from_s(5.5001)),
+            TraceEvent::activation(0, Time::from_s(5.0)),
+            TraceEvent::dispatch(0, Time::from_s(5.0)),
+            TraceEvent::deactivation(0, Time::from_s(5.5001)), // WCET
 
             // SS
             TraceEvent::activation(0, Time::from_ms(5550.0)),
             TraceEvent::dispatch(0, Time::from_ms(5550.0)),
-            TraceEvent::deactivation(0, Time::from_ms(5600.0)),
+            TraceEvent::deactivation(0, Time::from_ms(5600.0)), // WCET
             
             TraceEvent::activation(0, Time::from_s(15.3)),
             TraceEvent::dispatch(0, Time::from_s(15.3)),
@@ -526,7 +526,7 @@ mod test {
         let model = extractor.extract_model();
         let expected_model = PeriodicSelfSuspendingTask {
             period: Time::from_s(10.0),
-            total_wcet: Time::from_s(0.001) + Time::from_ms(100.0),
+            total_wcet: Time::from_s(0.5001) + Time::from_ms(50.0),
             total_wcss: Time::from_ms(99.0),
             wcet: vec!(),
             ss: vec!(),
@@ -792,22 +792,61 @@ mod test {
         assert!(!extractor.is_matching());
     }
 
-    // Test signal size over the limit
-    // TODO fix test or create another test for this case
-    // #[test]
-    fn periodic_ss_long() {
+    #[test]
+    fn periodic_one_suspension() {
         let mut trace = Trace::new();
-        for s in 0..MAX_SIGNAL_LEN {
-            trace.push(TraceEvent::activation(0, Time::from_s(s as f64)));
-            trace.push(TraceEvent::dispatch(0, Time::from_s(s as f64)));
-            trace.push(TraceEvent::deactivation(0, Time::from_s(s as f64) + Time::from_ms(5.0)));
-        }
+        let t_0 = Time::from_s(5.0);
         // To higher the sampling rate
-        let t = Time::from_s((MAX_SIGNAL_LEN-1) as f64) + Time::from_ms(10.0);
-        trace.push(TraceEvent::activation(0, t));
-        trace.push(TraceEvent::dispatch(0, t));
-        trace.push(TraceEvent::deactivation(0, t + Time::from_s(10.0))); // This would be the WCET if it's not classified as a self-suspension
+        trace.push(TraceEvent::activation(0, t_0));
+        trace.push(TraceEvent::dispatch(0, t_0));
+        trace.push(TraceEvent::deactivation(0, t_0 + Time::from_ms(5.0)));
+        let t_suspension = t_0 + Time::from_ms(5.0) + Time::from_ms(20.0);
+        trace.push(TraceEvent::activation(0, t_suspension));
+        trace.push(TraceEvent::dispatch(0, t_suspension));
+        trace.push(TraceEvent::deactivation(0, t_suspension + Time::from_ms(10.0)));
+        for i in 1..200_usize {
+            trace.push(TraceEvent::activation(0, t_0*i));
+            trace.push(TraceEvent::dispatch(0, t_0*i));
+            trace.push(TraceEvent::deactivation(0, t_0*i + Time::from_ms(5.0)));
+        }
         
+        let mut extractor = SpectralExtractor::new(MAX_SIGNAL_LEN, WINDOW_SIZE, FFT_FILTER_CUTOFF);
+        for event in trace.events() {
+            extractor.push_event(*event);
+        }
+        let model = extractor.extract_model();
+        let expected_model = PeriodicSelfSuspendingTask {
+            period: Time::from_s(5.0),
+            total_wcet: Time::from_ms(15.0),
+            total_wcss: Time::from_ms(20.0),
+            wcet: vec!(),
+            ss: vec!(),
+            segmented: false,
+        };
+
+        assert_eq!(model.unwrap(), expected_model);
+        assert!(extractor.is_matching());
+    }
+
+    // Test signal size over the limit
+    #[test]
+    fn periodic_long() {
+        let mut trace = Trace::new();
+        let t_0 = Time::from_s(5.0);
+        // To higher the sampling rate
+        trace.push(TraceEvent::activation(0, t_0));
+        trace.push(TraceEvent::dispatch(0, t_0));
+        trace.push(TraceEvent::deactivation(0, t_0 + Time::from_ms(5.0)));
+        let t_suspension = t_0 + Time::from_ms(5.0) + Time::from_ms(20.0);
+        trace.push(TraceEvent::activation(0, t_suspension));
+        trace.push(TraceEvent::dispatch(0, t_suspension));
+        trace.push(TraceEvent::deactivation(0, t_suspension + Time::from_ms(10.0)));
+        for i in 1..MAX_SIGNAL_LEN {
+            trace.push(TraceEvent::activation(0, t_0*i));
+            trace.push(TraceEvent::dispatch(0, t_0*i));
+            trace.push(TraceEvent::deactivation(0, t_0*i + Time::from_ms(5.0)));
+        }
+
         // Signal will be cropped
         let max_len = MAX_SIGNAL_LEN/4;
         let mut extractor = SpectralExtractor::new(max_len, WINDOW_SIZE, FFT_FILTER_CUTOFF);
@@ -816,12 +855,12 @@ mod test {
         }
         let model = extractor.extract_model();
         let expected_model = PeriodicSelfSuspendingTask {
-            period: Time::from_s(1.0),
-            total_wcet: Time::from_ms(10.0),
-            total_wcss: Time::from_ms(10.0),
-            wcet: vec!(),
+            period: Time::from_s(5.0),
+            total_wcet: Time::from_ms(5.0),
+            total_wcss: Time::zero(),
+            wcet: vec!(Time::from_ms(5.0)),
             ss: vec!(),
-            segmented: false,
+            segmented: true,
         };
 
         assert_eq!(model.unwrap(), expected_model);
