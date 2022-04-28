@@ -203,7 +203,7 @@ pub struct Opt {
     #[structopt(short = "w", long, default_value="1000")]
     pub window_size: usize,
 
-    /// Maximal amount of signal samples for the spectral extractor.
+    /// Maximal amount of signal samples for the spectral extractor. A value of 0 means no limit.
     #[structopt(short = "l", long, default_value="1000000")]
     pub signal_size: usize,
 

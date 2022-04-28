@@ -52,7 +52,7 @@ impl SpectralExtractor {
         let job_history = AllocRingBuffer::with_capacity(history_size);
         
         Self {
-            max_signal_len: max_signal_len.next_power_of_two(),
+            max_signal_len: if max_signal_len > 0 { max_signal_len.next_power_of_two() } else { 0 },
             fft_filter_cutoff,
             job_history,
             still_periodic: false,
@@ -163,7 +163,9 @@ impl SpectralExtractor {
         let first_arr = self.job_history.get(0).unwrap().arrived_at;
         let trace_delta_ns = self.job_history.back().unwrap().arrived_at - first_arr;
         let mut signal_len = ((trace_delta_ns.to_ns()/resolution.to_ns())+1) as usize;
-        signal_len = signal_len.min(self.max_signal_len); // The signal must not be too big to process
+        if self.max_signal_len > 0 && signal_len > self.max_signal_len {
+            signal_len = self.max_signal_len; // The signal must not be too big to process
+        }
 
         /* Build signal by truncating to desired resolution */
         let mut signal = Vec::with_capacity(signal_len);
