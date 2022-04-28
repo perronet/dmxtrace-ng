@@ -103,9 +103,9 @@ impl PeriodicTaskExtractor {
             new_average_gap -= self.average_gap / k;
         }
 
-        if new_diff < self.resolution {
-            panic!("Interarrival time ({} ns) is smaller than the resolution ({} ns)", new_diff, self.resolution);
-        }
+        // if new_diff < self.resolution {
+        //     panic!("Interarrival time ({} ns) is smaller than the resolution ({} ns)", new_diff, self.resolution);
+        // }
 
         self.activation_history.push(event);
         self.average_gap = new_average_gap;
@@ -139,7 +139,11 @@ impl PeriodicTaskExtractor {
                 model.period = self.average_gap.round(self.resolution);
             }
 
-            assert!(self.average_gap >= self.resolution);
+            // In case average_gap < resolution/2
+            if model.period == Time::zero() {
+                model.period = self.resolution;
+            }
+
             assert!(model.period >= Time::from(1));
             self.current_model.replace(model);
         }
