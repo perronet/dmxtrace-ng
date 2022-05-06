@@ -83,7 +83,10 @@ fn _main(args: Opt) -> AppResult {
         let mut last_update_time = Time::zero();
         let mut model_changed = false;
         let mut arrival_cnt = 1; // So that we start at 2 samples
-        let update_interval = Time::from_s(args.update_interval.unwrap() as f64);
+        let mut update_interval = Time::zero();
+        if let Some(interval) = args.update_interval {
+            update_interval = Time::from_s(interval as f64);
+        }
 
         for event in trace.events() {
             /* Check if the model could have changed, perform model extraction only in that case */
