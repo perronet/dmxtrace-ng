@@ -219,18 +219,29 @@ impl SpectralExtractor {
             fft_result[i].1 = fft_result[i].1/max_power as f32;
         }
         // Find spikes
+        let mut curr_local_spike: (f32, f32) = (0.0, 0.0); // Frequency => Power
         for i in 0..fft_result.len() {
             if fft_result[i].1 >= self.fft_filter_cutoff {
-                // println!("Spike {:#?} sec : {:#?}", 1f32/fft_result[i].0, fft_result[i].1); // TODO show spikes
-                spikes.push(Time::from_s((1f32/fft_result[i].0) as f64));
+                if fft_result[i].1 >= curr_local_spike.1 { // The same spike could be composed by multiple samples. Consider only the top.
+                    curr_local_spike.0 = fft_result[i].0;
+                    curr_local_spike.1 = fft_result[i].1;
+                }
+            } else if curr_local_spike != (0.0, 0.0) {
+                spikes.push(Time::from_s((1f32/curr_local_spike.0) as f64));
+                curr_local_spike = (0.0, 0.0);
             }
+        }
+        if curr_local_spike != (0.0, 0.0) { // Edge case
+            spikes.push(Time::from_s((1f32/curr_local_spike.0) as f64));
         }
 
         // TODO Debug: dump transform
         // let mut dump = Vec::new();
         // for (fr, fr_val) in fft_result {
-        //     dump.push((fr, fr_val));
+        //     dump.push((1.0/fr, fr_val));
         // }
+        // println!("{:#?}", dump);
+        
         // let file2 = OpenOptions::new().write(true).truncate(true).open("../../rbf-trace-experiments/testing/fft/transform.yaml").unwrap();
         // serde_yaml::to_writer(file2, &dump).unwrap();
 
@@ -244,12 +255,18 @@ impl SpectralExtractor {
             for i in 1..(5.min(spikes.len())) { // Look at the next 4 spikes
                 let ratio = (leftmost_spike.to_ns() as f32 / spikes[i].to_ns() as f32).round() as u32;
                 if ratio != (i+1) as u32 {
+                    // println!();
+                    // println!("SPIKE {:#?}", spikes);
+                    // print!("Ratio was {} but should be {}", ratio, i+1);
+                    // println!();
                     return Time::zero();
                 }
             }
         }
 
         spikes[0].round_to_greatest_resolution()
+        // spikes[0].round(Time::from_us(100.0))
+        // spikes[0]
     }
 
     fn push_job(&mut self, job: Job) {
