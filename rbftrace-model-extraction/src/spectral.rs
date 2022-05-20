@@ -158,7 +158,8 @@ impl SpectralExtractor {
             resolution = Time::from_s(1.0); // Max resolution
         }
         assert!(self.min_gap >= resolution);
-        assert!(resolution >= Time::from_us(10.0) && resolution <= Time::from_s(1.0));
+        assert!(resolution > Time::zero());
+        assert!(resolution <= Time::from_s(1.0));
 
         let first_arr = self.job_history.get(0).unwrap().arrived_at;
         let trace_delta_ns = self.job_history.back().unwrap().arrived_at - first_arr;
