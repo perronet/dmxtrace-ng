@@ -193,6 +193,19 @@ pub struct Opt {
     #[structopt(short = "p", long)]
     pub print: bool,
 
+    // TOGGLE MODEL MATCHERS
+    /// Toggle periodic extractor
+    #[structopt(short = "P", long)]
+    pub periodic_off: bool,
+    
+    /// Toggle spectral extractor
+    #[structopt(short = "S", long)]
+    pub spectral_off: bool,
+
+    /// Toggle RBF extractor
+    #[structopt(short = "R", long)]
+    pub rbf_off: bool,
+
     // TUNABLES
     /// Jitter bound (in nanoseconds).
     #[structopt(short = "J", long="j-max", default_value="1500000")]
@@ -235,7 +248,10 @@ impl From<&Opt> for CompositeExtractionParams {
         CompositeExtractionParams {
             periodic,
             spectral,
-            rbf
+            rbf,
+            periodic_enabled: !opts.periodic_off,
+            spectral_enabled: !opts.spectral_off,
+            rbf_enabled: !opts.rbf_off
         }
     }
 }
